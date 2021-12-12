@@ -3,13 +3,17 @@ const { groupsSelector, groupMemberAdded, groupMembersSet } = require("../redux/
 const store = require("../redux/store");
 const { constructGroupEmbed, constructGroupButtons } = require("../helpers/messageComponents");
 const userQueries = require("../db/userQueries.js");
-const { userInGroupOfStatus, userInGroup } = require("../helpers/groupHelpers");
+const {
+    userInGroupOfStatus,
+    userInGroup,
+    handleMessageAndStatusUpdates
+} = require("../helpers/groupHelpers");
 const groupStatus = require("../constants/groupStatus");
 
 module.exports = {
     name: buttonCustomIds.SHOW_INTEREST,
     execute: async ({ interaction, client, logger }) => {
-        logger.info("Handling join group");
+        logger.info("Handling interest group");
         const { message, member, guild } = interaction;
         const group = groupsSelector.selectById(store.getState(), message.id);
         const currentMembers = group.members;
@@ -42,32 +46,34 @@ module.exports = {
                 ...group,
                 members: newMembers
             };
-            const newEmbed = await constructGroupEmbed(guild, groupObj);
-            const newButtons = constructGroupButtons();
 
-            message.edit({ embeds: [newEmbed], components: newButtons }).then(async (newMsg) => {
-                store.dispatch(
-                    groupMembersSet({
-                        id: group.id,
-                        members: newMembers
-                    })
-                );
+            await handleMessageAndStatusUpdates(interaction, groupObj, groupStatus.UNKNOWN, false);
+            // const newEmbed = await constructGroupEmbed(guild, groupObj);
+            // const newButtons = constructGroupButtons();
 
-                userQueries.updateUserStatus.run(
-                    groupStatus.UNKNOWN,
-                    member.id.toString(),
-                    group.id.toString(),
-                    (err) => {
-                        if (err) return console.error(err);
+            // message.edit({ embeds: [newEmbed], components: newButtons }).then(async (newMsg) => {
+            //     store.dispatch(
+            //         groupMembersSet({
+            //             id: group.id,
+            //             members: newMembers
+            //         })
+            //     );
 
-                        interaction.reply({
-                            content: "I've updated your status in the group!",
-                            ephemeral: true
-                        });
-                        return;
-                    }
-                );
-            });
+            //     userQueries.updateUserStatus.run(
+            //         groupStatus.UNKNOWN,
+            //         member.id.toString(),
+            //         group.id.toString(),
+            //         (err) => {
+            //             if (err) return console.error(err);
+
+            //             interaction.reply({
+            //                 content: "I've updated your status in the group!",
+            //                 ephemeral: true
+            //             });
+            //             return;
+            //         }
+            //     );
+            // });
         } else {
             // HANDLE A NEW USER JOINING GROUP
             const newMembers = {
@@ -79,32 +85,34 @@ module.exports = {
                 ...group,
                 members: newMembers
             };
-            const newEmbed = await constructGroupEmbed(guild, groupObj);
-            const newButtons = constructGroupButtons();
 
-            message.edit({ embeds: [newEmbed], components: newButtons }).then(async (newMsg) => {
-                store.dispatch(
-                    groupMemberAdded({
-                        id: group.id,
-                        members: { id: member.id, status: groupStatus.UNKNOWN }
-                    })
-                );
+            await handleMessageAndStatusUpdates(interaction, groupObj, groupStatus.UNKNOWN, true);
+            // const newEmbed = await constructGroupEmbed(guild, groupObj);
+            // const newButtons = constructGroupButtons();
 
-                userQueries.addUserToGroup.run(
-                    member.id.toString(),
-                    group.id.toString(),
-                    groupStatus.UNKNOWN,
-                    (err) => {
-                        if (err) return console.error(err);
+            // message.edit({ embeds: [newEmbed], components: newButtons }).then(async (newMsg) => {
+            //     store.dispatch(
+            //         groupMemberAdded({
+            //             id: group.id,
+            //             members: { id: member.id, status: groupStatus.UNKNOWN }
+            //         })
+            //     );
 
-                        interaction.reply({
-                            content: "I've added you to the group!",
-                            ephemeral: true
-                        });
-                        return;
-                    }
-                );
-            });
+            //     userQueries.addUserToGroup.run(
+            //         member.id.toString(),
+            //         group.id.toString(),
+            //         groupStatus.UNKNOWN,
+            //         (err) => {
+            //             if (err) return console.error(err);
+
+            //             interaction.reply({
+            //                 content: "I've added you to the group!",
+            //                 ephemeral: true
+            //             });
+            //             return;
+            //         }
+            //     );
+            // });
         }
     }
 };

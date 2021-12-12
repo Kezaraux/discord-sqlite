@@ -8,6 +8,7 @@ const userQueries = require("../db/userQueries.js");
 module.exports = {
     name: buttonCustomIds.REMOVE_GROUP,
     execute: async ({ interaction, client, logger }) => {
+        logger.info("Handling delete group");
         const { message, member } = interaction;
         const group = groupsSelector.selectById(store.getState(), message.id);
 

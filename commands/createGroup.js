@@ -92,9 +92,6 @@ module.exports = {
 
         groupObj.id = newMessage.id;
         groupObj.channelId = newMessage.channel.id;
-        console.log(groupObj);
-
-        console.log(`THE THING YOU WANT IS: ${newMessage.id}`);
 
         store.dispatch(groupAdded(groupObj));
 

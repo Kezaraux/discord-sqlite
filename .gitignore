@@ -2,3 +2,4 @@ config.json
 node_modules/
 info.db
 notes.txt
+dbtest.json

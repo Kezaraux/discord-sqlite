@@ -8,7 +8,7 @@ const userQueries = require("../db/userQueries.js");
 module.exports = {
     name: buttonCustomIds.LEAVE_GROUP,
     execute: async ({ interaction, client, logger }) => {
-        logger.info("Handling join group");
+        logger.info("Handling leave group");
         const { message, member, guild } = interaction;
 
         const group = groupsSelector.selectById(store.getState(), message.id);

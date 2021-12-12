@@ -11,7 +11,6 @@ module.exports = {
             (err, row) => {
                 if (err) return console.error(err);
 
-                console.log(row);
                 const groupObj = {
                     id: row.messageID,
                     guildId: row.guildID,
@@ -34,7 +33,6 @@ module.exports = {
                 );
 
                 for (const group of groupList) {
-                    console.log(group);
                     userQueries.fetchAllUsersForGroup.each(
                         group,
                         (err, row) => {
