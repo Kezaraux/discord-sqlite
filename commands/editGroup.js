@@ -15,7 +15,7 @@ const {
 const updateMessage = async (interaction, groupID) => {
     const group = groupsSelector.selectById(store.getState(), groupID);
 
-    const newEmbed = await constructGroupEmbed(interaction.client, group);
+    const newEmbed = await constructGroupEmbed(interaction.guild, group);
     const newButtons = constructGroupButtons();
 
     const channel = await interaction.client.channels.resolve(group.channelID);
@@ -175,13 +175,21 @@ module.exports = {
                 )
         ),
     execute: async (interaction, logger) => {
-        const { options } = interaction;
+        const { options, member } = interaction;
 
         const subCmd = options.getSubcommand();
         const value = options.get("value").value;
         const groupID = options.get("groupid").value;
 
-        console.log({ subCmd, value, groupID });
+        const group = groupsSelector.selectById(store.getState(), groupID);
+        if (member.id !== group.creatorID) {
+            interaction.reply({
+                content:
+                    "You cannot edit this group since you didn't create it. Please get the group owner to perform any edits.",
+                ephemeral: true
+            });
+            return;
+        }
 
         switch (subCmd) {
             case "title":

@@ -5,7 +5,7 @@ const groupStatus = require("../constants/groupStatus");
 const buttonCustomIds = require("../constants/buttonCustomIds");
 const { getUserDisplayName, fetchUser } = require("../helpers/userHelpers.js");
 
-const constructGroupEmbed = async (client, groupObj) => {
+const constructGroupEmbed = async (guild, groupObj) => {
     const { title, size, datetime, timezone, members, guildId, creatorID } = groupObj;
     const embed = new MessageEmbed()
         .setTitle(title)
@@ -19,7 +19,7 @@ const constructGroupEmbed = async (client, groupObj) => {
     const unknown = [];
 
     for (const member in members) {
-        const displayName = await getUserDisplayName(client, member, guildId);
+        const displayName = await getUserDisplayName(guild, member);
         switch (members[member]) {
             case groupStatus.CONFIRMED:
                 confirmed.push(displayName);
@@ -53,9 +53,7 @@ const constructGroupEmbed = async (client, groupObj) => {
         true
     );
     embed.setFooter(
-        `Group created by: ${await getUserDisplayName(client, creatorID, guildId)}\nGroup ID: ${
-            groupObj.id
-        }`
+        `Group created by: ${await getUserDisplayName(guild, creatorID)}\nGroup ID: ${groupObj.id}`
     );
 
     return embed;

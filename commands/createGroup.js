@@ -45,7 +45,7 @@ module.exports = {
                 .setRequired(false)
         ),
     execute: async (interaction, logger) => {
-        const { member, options, client } = interaction;
+        const { member, options, client, guild } = interaction;
 
         // console.log(options.data); // [ {name, type, value}, ... ]
 
@@ -82,7 +82,7 @@ module.exports = {
             members: {}
         };
 
-        const embed = await constructGroupEmbed(client, groupObj);
+        const embed = await constructGroupEmbed(guild, groupObj);
         const components = constructGroupButtons();
 
         const newMessage = await targetChannel.send({

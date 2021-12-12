@@ -9,7 +9,7 @@ module.exports = {
     name: buttonCustomIds.LEAVE_GROUP,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling join group");
-        const { message, member } = interaction;
+        const { message, member, guild } = interaction;
 
         const group = groupsSelector.selectById(store.getState(), message.id);
 
@@ -32,7 +32,7 @@ module.exports = {
             ...group,
             members: newMembers
         };
-        const newEmbed = await constructGroupEmbed(client, groupObj);
+        const newEmbed = await constructGroupEmbed(guild, groupObj);
         const newButtons = constructGroupButtons();
 
         message.edit({ embeds: [newEmbed], components: newButtons }).then(async (newMsg) => {
