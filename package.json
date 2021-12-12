@@ -1,0 +1,25 @@
+{
+  "name": "discord-sqlite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy-dev": "node deploy-dev-commands.js",
+    "deploy": "node deploy-commands.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^0.9.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "@reduxjs/toolkit": "^1.7.0",
+    "discord-api-types": "^0.25.2",
+    "discord.js": "^13.3.1",
+    "moment-timezone": "^0.5.34",
+    "sqlite3": "^5.0.2",
+    "winston": "^3.3.3"
+  }
+}
