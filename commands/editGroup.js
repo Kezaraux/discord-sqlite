@@ -18,7 +18,7 @@ const updateMessage = async (interaction, groupID) => {
     const newEmbed = await constructGroupEmbed(interaction.guild, group);
     const newButtons = constructGroupButtons();
 
-    const channel = await interaction.client.channels.resolve(group.channelID);
+    const channel = await interaction.guild.channels.fetch(group.channelID);
     const message = await channel.messages.fetch(group.id);
 
     message

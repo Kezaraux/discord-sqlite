@@ -18,11 +18,16 @@ const displayGuildCommands = async () => {
     console.log(guildCommands);
 };
 
-const cmdId = "putIdHere";
+const guildCmdIds = ["866090784817020929", "919523921924075570"];
 
 const deleteExtraGuildCommands = async () => {
-    await interaction.deleteApplicationCommand(cmdId, guildId);
+    for (const cmdId of guildCmdIds) {
+        await interaction.deleteApplicationCommand(cmdId, guildId);
+    }
 };
 
+console.log("Global");
 displayGlobalCommands();
-displayGuildCommands();
+
+console.log(`Guild: ${guildId}`);
+displayGuildCommands(guildId);
