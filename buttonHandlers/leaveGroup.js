@@ -23,7 +23,7 @@ module.exports = {
         const newMembers = currentMembers.reduce((acc, val) => {
             // Create new object since old one you couldn't overwrite properties
             if (val !== member.id) {
-                acc[val] = { ...group.members[val] };
+                acc[val] = group.members[val];
             }
             return acc;
         }, {});
