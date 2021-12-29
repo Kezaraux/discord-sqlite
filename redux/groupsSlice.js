@@ -8,6 +8,7 @@ const { createSlice, createEntityAdapter } = require("@reduxjs/toolkit");
 //  when,
 //  timezone,
 //  creatorID,
+//  eventId,
 // 	members: {
 // 		id: status
 // 	}
@@ -80,6 +81,13 @@ const groupsSlice = createSlice({
             if (group) {
                 group.timezone = timezone;
             }
+        },
+        groupEventIdChanged: (state, action) => {
+            const { id, value } = action.payload;
+            const group = state.entities[id];
+            if (group) {
+                group.eventId = value;
+            }
         }
     }
 });
@@ -93,7 +101,8 @@ const {
     groupSizeChanged,
     groupTitleChanged,
     groupTimezoneChanged,
-    groupDatetimeChanged
+    groupDatetimeChanged,
+    groupEventIdChanged
 } = groupsSlice.actions;
 
 module.exports = {
@@ -107,5 +116,6 @@ module.exports = {
     groupSizeChanged,
     groupTitleChanged,
     groupDatetimeChanged,
-    groupTimezoneChanged
+    groupTimezoneChanged,
+    groupEventIdChanged
 };

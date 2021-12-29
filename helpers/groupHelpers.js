@@ -1,6 +1,6 @@
 const groupStatus = require("../constants/groupStatus.js");
 const userQueries = require("../db/userQueries.js");
-const { constructGroupEmbed, constructGroupButtons } = require("./messageComponents");
+const { constructGroupMessage } = require("./messageComponents");
 const store = require("../redux/store.js");
 const { groupMembersSet } = require("../redux/groupsSlice.js");
 
@@ -43,51 +43,53 @@ const userCanSwapTo = (group, userID, swapToStatus) => {
     }
 };
 
-const handleMessageAndStatusUpdates = async (interaction, groupObj, statusToAdd, adding) => {
-    const newEmbed = await constructGroupEmbed(interaction.guild, groupObj);
-    const newButtons = constructGroupButtons();
+const handleMessageAndStatusUpdates = async (
+    interaction,
+    groupObj,
+    statusToAdd,
+    adding,
+    active = true
+) => {
+    const newMessage = await constructGroupMessage(interaction.guild, groupObj, active);
+    interaction.message.edit(newMessage).then(async (newMsg) => {
+        store.dispatch(
+            groupMembersSet({
+                id: groupObj.id,
+                members: groupObj.members
+            })
+        );
 
-    interaction.message
-        .edit({ embeds: [newEmbed], components: newButtons })
-        .then(async (newMsg) => {
-            store.dispatch(
-                groupMembersSet({
-                    id: groupObj.id,
-                    members: groupObj.members
-                })
+        if (adding) {
+            userQueries.addUserToGroup.run(
+                interaction.member.id.toString(),
+                groupObj.id.toString(),
+                statusToAdd,
+                (err) => {
+                    if (err) return console.error(err);
+
+                    interaction.reply({
+                        content: "I've added you to the group!",
+                        ephemeral: true
+                    });
+                }
             );
+        } else {
+            userQueries.updateUserStatus.run(
+                statusToAdd,
+                interaction.member.id.toString(),
+                groupObj.id.toString(),
+                (err) => {
+                    if (err) return console.error(err);
 
-            if (adding) {
-                userQueries.addUserToGroup.run(
-                    interaction.member.id.toString(),
-                    groupObj.id.toString(),
-                    statusToAdd,
-                    (err) => {
-                        if (err) return console.error(err);
-
-                        interaction.reply({
-                            content: "I've added you to the group!",
-                            ephemeral: true
-                        });
-                    }
-                );
-            } else {
-                userQueries.updateUserStatus.run(
-                    statusToAdd,
-                    interaction.member.id.toString(),
-                    groupObj.id.toString(),
-                    (err) => {
-                        if (err) return console.error(err);
-
-                        interaction.reply({
-                            content: "I've updated your status in the group!",
-                            ephemeral: true
-                        });
-                        return;
-                    }
-                );
-            }
-        });
+                    interaction.reply({
+                        content: "I've updated your status in the group!",
+                        ephemeral: true
+                    });
+                    return;
+                }
+            );
+        }
+    });
 };
 
 module.exports = {

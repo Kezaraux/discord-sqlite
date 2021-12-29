@@ -12,9 +12,25 @@ const {
     groupsSelector
 } = require("../redux/groupsSlice.js");
 
-const updateMessage = async (interaction, groupID) => {
-    const group = groupsSelector.selectById(store.getState(), groupID);
+const updateScheduledEvent = async (interaction, eventId, property, value) => {
+    if (!eventId) return;
 
+    const payload = {
+        [property]: value
+    };
+
+    interaction.guild.scheduledEvents
+        .edit(eventId, payload)
+        .then((updatedEvent) => {
+            console.log(`Successfully updated event ${eventId}`);
+        })
+        .catch((err) => {
+            console.log(`Encountered an issue when updating event ${eventId}`);
+            console.error(err);
+        });
+};
+
+const updateMessage = async (interaction, group) => {
     const newEmbed = await constructGroupEmbed(interaction.guild, group);
     const newButtons = constructGroupButtons();
 
@@ -27,12 +43,13 @@ const updateMessage = async (interaction, groupID) => {
         .catch(console.error);
 };
 
-const handleTitle = async (interaction, value, groupID) => {
-    groupQueries.updateGroupTitle.run(value, groupID, (err) => {
+const handleTitle = async (interaction, value, group) => {
+    groupQueries.updateGroupTitle.run(value, group.id, (err) => {
         if (err) return console.error(err);
 
-        store.dispatch(groupTitleChanged({ id: groupID, title: value }));
-        updateMessage(interaction, groupID);
+        store.dispatch(groupTitleChanged({ id: group.id, title: value }));
+        updateScheduledEvent(interaction, group.eventId, "name", value);
+        updateMessage(interaction, group);
 
         interaction.reply({
             content: "I successfully updated your group's title!",
@@ -42,13 +59,13 @@ const handleTitle = async (interaction, value, groupID) => {
     });
 };
 
-const handleSize = async (interaction, value, groupID) => {
+const handleSize = async (interaction, value, group) => {
     console.log(value);
-    groupQueries.updateGroupSize.run(value, groupID, (err) => {
+    groupQueries.updateGroupSize.run(value, group.id, (err) => {
         if (err) return console.error(err);
 
-        store.dispatch(groupSizeChanged({ id: groupID, size: value }));
-        updateMessage(interaction, groupID);
+        store.dispatch(groupSizeChanged({ id: group.id, size: value }));
+        updateMessage(interaction, group);
 
         interaction.reply({
             content: "I successfully updated your group's size!",
@@ -58,22 +75,27 @@ const handleSize = async (interaction, value, groupID) => {
     });
 };
 
-const handleDatetime = async (interaction, value, groupID) => {
+const handleDatetime = async (interaction, value, group) => {
     const eventMoment = momentTimezone.tz(value, "America/Toronto");
     if (!eventMoment.isValid()) {
         await interaction.reply({
-            content:
-                "The datetime string you provided wasn't valid.\nPlease follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.",
+            content: `The datetime string you provided wasn't valid. Please follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.`,
             ephemeral: true
         });
         return;
     }
 
-    groupQueries.updateGroupEventTime.run(value, groupID, (err) => {
+    groupQueries.updateGroupEventTime.run(value, group, (err) => {
         if (err) return console.error(err);
 
-        store.dispatch(groupDatetimeChanged({ id: groupID, datetime: value }));
-        updateMessage(interaction, groupID);
+        store.dispatch(groupDatetimeChanged({ id: group, datetime: value }));
+        updateScheduledEvent(
+            interaction,
+            group.eventId,
+            "scheduledStartTime",
+            eventMoment.toISOString()
+        );
+        updateMessage(interaction, group.id);
 
         interaction.reply({
             content: "I successfully updated your group's event time!",
@@ -83,12 +105,27 @@ const handleDatetime = async (interaction, value, groupID) => {
     });
 };
 
-const handleTimezone = async (interaction, value, groupID) => {
-    groupQueries.updateGroupTimezone.run(value, groupID, (err) => {
+const handleTimezone = async (interaction, value, group) => {
+    const eventMoment = momentTimezone.tz(value, "America/Toronto");
+    if (!eventMoment.isValid()) {
+        await interaction.reply({
+            content: `The datetime string you provided wasn't valid. Please follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.`,
+            ephemeral: true
+        });
+        return;
+    }
+
+    groupQueries.updateGroupTimezone.run(value, group.channelID, (err) => {
         if (err) return console.error(err);
 
-        store.dispatch(groupTimezoneChanged({ id: groupID, timezone: value }));
-        updateMessage(interaction, groupID);
+        store.dispatch(groupTimezoneChanged({ id: group.id, timezone: value }));
+        updateScheduledEvent(
+            interaction,
+            group.eventId,
+            "scheduledStartTime",
+            eventMoment.toISOString()
+        );
+        updateMessage(interaction, group.id);
 
         interaction.reply({
             content: "I successfully updated your group's timezone!",
@@ -193,16 +230,16 @@ module.exports = {
 
         switch (subCmd) {
             case "title":
-                await handleTitle(interaction, value, groupID);
+                await handleTitle(interaction, value, group);
                 break;
             case "size":
-                await handleSize(interaction, value, groupID);
+                await handleSize(interaction, value, group);
                 break;
             case "when":
-                await handleDatetime(interaction, value, groupID);
+                await handleDatetime(interaction, value, group);
                 break;
             case "timezone":
-                await handleTimezone(interaction, value, groupID);
+                await handleTimezone(interaction, value, group);
                 break;
             default:
                 interaction.reply({

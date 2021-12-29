@@ -5,7 +5,7 @@ const groupStatus = require("../constants/groupStatus");
 const buttonCustomIds = require("../constants/buttonCustomIds");
 const { getUserDisplayName, fetchUser } = require("../helpers/userHelpers.js");
 
-const constructGroupEmbed = async (guild, groupObj) => {
+const constructGroupEmbed = async (guild, groupObj, active = true) => {
     const { title, size, datetime, timezone, members, guildId, creatorID } = groupObj;
     const embed = new MessageEmbed()
         .setTitle(title)
@@ -52,6 +52,11 @@ const constructGroupEmbed = async (guild, groupObj) => {
         unknown.join("\n") || "None",
         true
     );
+
+    if (!active) {
+        embed.addField(`Inactive`, `This group is no longer active!`, false);
+    }
+
     embed.setFooter(
         `Group created by: ${await getUserDisplayName(guild, creatorID)}\nGroup ID: ${groupObj.id}`
     );
@@ -88,7 +93,17 @@ const constructGroupButtons = () => {
     return [joinRow, leaveRow];
 };
 
+const constructGroupMessage = async (guild, groupObj, active = true) => {
+    const newEmbed = await constructGroupEmbed(guild, groupObj, active);
+    const newButtons = constructGroupButtons(active);
+
+    return active
+        ? { embeds: [newEmbed], components: newButtons }
+        : { content: "\u200b", embeds: [newEmbed], components: [] };
+};
+
 module.exports = {
     constructGroupEmbed,
-    constructGroupButtons
+    constructGroupButtons,
+    constructGroupMessage
 };

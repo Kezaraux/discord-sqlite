@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const momentTimezone = require("moment-timezone");
+const { Permissions } = require("discord.js");
 
 const store = require("../redux/store.js");
 const { groupAdded } = require("../redux/groupsSlice.js");
@@ -30,6 +31,21 @@ module.exports = {
                 )
                 .setRequired(true)
         )
+        // OPTIONAL OPTIONS
+        .addBooleanOption((option) =>
+            option
+                .setName("create-event")
+                .setDescription(
+                    "Whether or not to create an Event for this group. Cancelling the event will not remove the group."
+                )
+                .setRequired(false)
+        )
+        .addChannelOption((option) =>
+            option
+                .setName("event-channel")
+                .setDescription("A voice channel to use for guild event.")
+                .setRequired(false)
+        )
         .addStringOption((option) =>
             option
                 .setName("timezone")
@@ -52,14 +68,16 @@ module.exports = {
         const title = options.getString("title");
         const size = options.getInteger("size");
         const datetime = options.getString("datetime");
+        const toCreateEvent = options.getBoolean("create-event") ?? false;
+        const eventChannel = options.getChannel("event-channel");
         const timezone = options.getString("timezone", false) ?? "America/Toronto";
         const channel = options.getChannel("channel", false);
 
         const eventMoment = momentTimezone.tz(datetime, timezone);
         if (!eventMoment.isValid()) {
             await interaction.reply({
-                content:
-                    "The datetime string you provided wasn't valid.\nPlease follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.",
+                content: `The datetime string you provided wasn't valid.
+                    Please follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.`,
                 ephemeral: true
             });
             return;
@@ -79,8 +97,40 @@ module.exports = {
             datetime,
             timezone,
             creatorID: member.id,
-            members: {}
+            members: {},
+            eventId: null
         };
+
+        if (toCreateEvent) {
+            const botHasPermission = guild.me.permissions.has(Permissions.FLAGS.MANAGE_EVENTS);
+            if (!botHasPermission) {
+                await interaction.reply({
+                    content: `I do not have permissions to create events.
+                        Please redo the command without event options.`,
+                    ephemeral: true
+                });
+                return;
+            }
+
+            if (!eventChannel || !eventChannel.isVoice()) {
+                await interaction.reply({
+                    content: `You set createEvent to true, but didn't specify an event channel, or gave a text channel. Please redo the command, but specify a voice channel for the eventChannel option!`,
+                    ephemeral: true
+                });
+                return;
+            }
+
+            const newEvent = await guild.scheduledEvents.create({
+                name: title,
+                scheduledStartTime: eventMoment.toISOString(),
+                privacyLevel: "GUILD_ONLY",
+                entityType: "VOICE",
+                channel: eventChannel
+            });
+
+            logger.info(`Successfully created a new scheduled Guild event with id: ${newEvent.id}`);
+            groupObj.eventId = newEvent.id;
+        }
 
         const embed = await constructGroupEmbed(guild, groupObj);
         const components = constructGroupButtons();
@@ -104,6 +154,7 @@ module.exports = {
             datetime,
             timezone,
             member.id.toString(),
+            groupObj.eventId?.toString(),
             async (err) => {
                 if (err) {
                     console.error(err);

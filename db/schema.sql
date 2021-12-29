@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS groups(
     eventtime DATETIME NOT NULL,
     timezone TEXT NOT NULL DEFAULT 'America/Toronto',
     ownerID TEXT NOT NULL,
+    eventID TEXT UNIQUE,
     PRIMARY KEY (messageID)
 );
 

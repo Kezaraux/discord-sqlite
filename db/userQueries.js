@@ -17,10 +17,22 @@ const removeAllUsersFromGroup = db.prepare("DELETE FROM users WHERE groupID = ?"
 // fetchAllUsersForGroup(groupID)
 const fetchAllUsersForGroup = db.prepare("SELECT * FROM users WHERE groupID = ?");
 
+// removeAllUsersFromGroupsUnderGuild(guildID)
+const removeAllUsersFromGroupsUnderGuild = db.prepare(
+    "DELETE FROM users WHERE groupID IN (SELECT u.groupID FROM users u INNER JOIN groups g ON messageID=groupID WHERE guildID = ?)"
+);
+
+// removeAllUsersFromGroupsUnderChannel(channelID)
+const removeAllUsersFromGroupsUnderChannel = db.prepare(
+    "DELETE FROM users WHERE groupID IN (SELECT u.groupID FROM users u INNER JOIN groups g ON messageID=groupID WHERE channelID = ?)"
+);
+
 module.exports = {
     addUserToGroup,
     updateUserStatus,
     removeUserFromGroup,
     removeAllUsersFromGroup,
-    fetchAllUsersForGroup
+    fetchAllUsersForGroup,
+    removeAllUsersFromGroupsUnderGuild,
+    removeAllUsersFromGroupsUnderChannel
 };
