@@ -6,6 +6,7 @@ const store = require("../redux/store.js");
 const { groupAdded } = require("../redux/groupsSlice.js");
 const { createGroup } = require("../db/groupQueries");
 const { constructGroupButtons, constructGroupEmbed } = require("../helpers/messageComponents.js");
+const guildScheduledEventUpdate = require("../events/guildScheduledEventUpdate.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -105,8 +106,15 @@ module.exports = {
             const botHasPermission = guild.me.permissions.has(Permissions.FLAGS.MANAGE_EVENTS);
             if (!botHasPermission) {
                 await interaction.reply({
-                    content: `I do not have permissions to create events.
-                        Please redo the command without event options.`,
+                    content: `I do not have permissions to create events. Please redo the command without event options.`,
+                    ephemeral: true
+                });
+                return;
+            }
+
+            if (eventMoment.diff(momentTimezone()) < 0) {
+                await interaction.reply({
+                    content: `The start time for an event must be in the future. Please use a date/time after now.`,
                     ephemeral: true
                 });
                 return;

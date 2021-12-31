@@ -16,9 +16,13 @@ module.exports = {
         const group = groupsSelector.selectById(store.getState(), message.id);
 
         if (
-            member.id !== group.creatorID ||
+            member.id !== group.creatorID &&
             !member.permissionsIn(message.channel).has(Permissions.FLAGS.MANAGE_MESSAGES)
         ) {
+            console.log(member.id, group.creatorID);
+            console.log(
+                !member.permissionsIn(message.channel).has(Permissions.FLAGS.MANAGE_MESSAGES)
+            );
             interaction.reply({
                 content: `The group can only be removed if:
             1) The group creator requests it
@@ -68,9 +72,7 @@ module.exports = {
         combinedQueries.removeGroupByGroupId(group.id);
 
         if (group.eventId) {
-            console.log("FETCHING EVENT");
             const guildEvent = await interaction.guild.scheduledEvents.fetch(group.eventId);
-            console.log(guildEvent);
             guildEvent
                 .delete()
                 .then(() => {

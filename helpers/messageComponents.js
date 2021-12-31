@@ -6,7 +6,7 @@ const buttonCustomIds = require("../constants/buttonCustomIds");
 const { getUserDisplayName, fetchUser } = require("../helpers/userHelpers.js");
 
 const constructGroupEmbed = async (guild, groupObj, active = true) => {
-    const { title, size, datetime, timezone, members, guildId, creatorID } = groupObj;
+    const { title, size, datetime, timezone, members, guildId, creatorID, eventId } = groupObj;
     const embed = new MessageEmbed()
         .setTitle(title)
         .setDescription(`Number of members needed: ${size}`);
@@ -55,6 +55,12 @@ const constructGroupEmbed = async (guild, groupObj, active = true) => {
 
     if (!active) {
         embed.addField(`Inactive`, `This group is no longer active!`, false);
+    }
+
+    if (eventId) {
+        const scheduledEvent = await guild.scheduledEvents.fetch(eventId);
+        const url = await scheduledEvent.createInviteURL();
+        embed.addField(`Event URL`, `${url}`, false);
     }
 
     embed.setFooter(
