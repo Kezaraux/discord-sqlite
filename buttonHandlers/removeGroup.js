@@ -15,6 +15,16 @@ module.exports = {
         const { message, member } = interaction;
         const group = groupsSelector.selectById(store.getState(), message.id);
 
+        if (!group) {
+            logger.info(`There is no group for message of ID: ${message.id}`);
+            interaction.reply({
+                content:
+                    "I don't have a group for this message in my database. Something weird must have happened. Please delete the associated message.",
+                ephemeral: true
+            });
+            return;
+        }
+
         if (
             member.id !== group.creatorID &&
             !member.permissionsIn(message.channel).has(Permissions.FLAGS.MANAGE_MESSAGES)

@@ -9,7 +9,6 @@ module.exports = {
     execute: async (client, logger) => {
         logger.info("Fetching stored groups and populating cache");
         await groupQueries.fetchAllGroups.each(async (err, row) => {
-            console.log("Fetching groups");
             if (err) return console.error(err);
 
             const groupObj = {
@@ -66,7 +65,7 @@ module.exports = {
             store.dispatch(groupAdded(groupObj));
 
             const group = row.messageID;
-            console.log(`Fetching members for ${group}`);
+            logger.info(`Fetching members for ${group}`);
             userQueries.fetchAllUsersForGroup.each(
                 group,
                 (err, row) => {
