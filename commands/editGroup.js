@@ -51,7 +51,7 @@ const handleTitle = async (interaction, value, group) => {
 
         store.dispatch(groupTitleChanged({ id: group.id, title: value }));
         updateScheduledEvent(interaction, group.eventId, "name", value);
-        updateMessage(interaction, group);
+        updateMessage(interaction, group.id);
 
         interaction.reply({
             content: "I successfully updated your group's title!",
@@ -62,12 +62,11 @@ const handleTitle = async (interaction, value, group) => {
 };
 
 const handleSize = async (interaction, value, group) => {
-    console.log(value);
     groupQueries.updateGroupSize.run(value, group.id, (err) => {
         if (err) return console.error(err);
 
         store.dispatch(groupSizeChanged({ id: group.id, size: value }));
-        updateMessage(interaction, group);
+        updateMessage(interaction, group.id);
 
         interaction.reply({
             content: "I successfully updated your group's size!",

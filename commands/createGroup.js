@@ -153,6 +153,11 @@ module.exports = {
 
         store.dispatch(groupAdded(groupObj));
 
+        const newEmbed = await constructGroupEmbed(guild, groupObj);
+        const newComps = constructGroupButtons();
+        const messageWithId = { embeds: [newEmbed], components: newComps };
+        newMessage.edit(messageWithId);
+
         createGroup.run(
             newMessage.id.toString(),
             newMessage.channel.id.toString(),
