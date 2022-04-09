@@ -30,16 +30,18 @@ const updateScheduledEvent = async (interaction, eventId, property, value) => {
         });
 };
 
-const updateMessage = async (interaction, group) => {
-    const newEmbed = await constructGroupEmbed(interaction.guild, group);
+const updateMessage = async (interaction, groupId) => {
+    const groupObj = groupsSelector.selectById(store.getState(), groupId);
+
+    const newEmbed = await constructGroupEmbed(interaction.guild, groupObj);
     const newButtons = constructGroupButtons();
 
-    const channel = await interaction.guild.channels.fetch(group.channelID);
-    const message = await channel.messages.fetch(group.id);
+    const channel = await interaction.guild.channels.fetch(groupObj.channelID);
+    const message = await channel.messages.cache.get(groupObj.id);
 
     message
         .edit({ embeds: [newEmbed], components: newButtons })
-        .then((newMsg) => console.log(`Edited message for group ${group.id}`))
+        .then((newMsg) => console.log(`Edited message for group ${groupObj.id}`))
         .catch(console.error);
 };
 
@@ -88,7 +90,7 @@ const handleDatetime = async (interaction, value, group) => {
     groupQueries.updateGroupEventTime.run(value, group, (err) => {
         if (err) return console.error(err);
 
-        store.dispatch(groupDatetimeChanged({ id: group, datetime: value }));
+        store.dispatch(groupDatetimeChanged({ id: group.id, datetime: value }));
         updateScheduledEvent(
             interaction,
             group.eventId,
