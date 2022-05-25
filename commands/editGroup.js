@@ -37,7 +37,9 @@ const updateMessage = async (interaction, groupId) => {
     const newButtons = constructGroupButtons();
 
     const channel = await interaction.guild.channels.fetch(groupObj.channelID);
-    const message = await channel.messages.cache.get(groupObj.id);
+    const message =
+        (await channel.messages.cache.get(groupObj.id)) ||
+        (await channel.messages.fetch(groupObj.id));
 
     message
         .edit({ embeds: [newEmbed], components: newButtons })
