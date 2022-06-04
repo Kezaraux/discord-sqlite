@@ -99,6 +99,17 @@ const constructGroupButtons = () => {
     return [joinRow, leaveRow];
 };
 
+const constructAcknowledgeButton = () => {
+    const mainRow = new MessageActionRow().addComponents(
+        new MessageButton()
+            .setCustomId(buttonCustomIds.ACKNOWLEDGE)
+            .setLabel("Acknowledge")
+            .setStyle("SUCCESS")
+    );
+
+    return [mainRow];
+};
+
 const constructGroupMessage = async (guild, groupObj, active = true) => {
     const newEmbed = await constructGroupEmbed(guild, groupObj, active);
     const newButtons = constructGroupButtons(active);
@@ -111,5 +122,6 @@ const constructGroupMessage = async (guild, groupObj, active = true) => {
 module.exports = {
     constructGroupEmbed,
     constructGroupButtons,
-    constructGroupMessage
+    constructGroupMessage,
+    constructAcknowledgeButton
 };

@@ -4,5 +4,6 @@ module.exports = {
     JOIN_GROUP: "joinGroup",
     SHOW_INTEREST: "showInterest",
     LEAVE_GROUP: "leaveGroup",
-    REMOVE_GROUP: "removeGroup"
+    REMOVE_GROUP: "removeGroup",
+    ACKNOWLEDGE: "acknowledge"
 };

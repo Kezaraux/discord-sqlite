@@ -1,8 +1,11 @@
+const momentTimezone = require("moment-timezone");
+
 const store = require("../redux/store.js");
 const { groupAdded, groupMemberAdded } = require("../redux/groupsSlice.js");
 const groupQueries = require("../db/groupQueries.js");
 const userQueries = require("../db/userQueries.js");
 const combinedQueries = require("../db/combinedQueries.js");
+const { constructAcknowledgeButton } = require("../helpers/messageComponents.js");
 
 module.exports = {
     name: "groupFeature",
@@ -82,6 +85,28 @@ module.exports = {
                     logger.info(`Done handling a total of ${count} members for group ${group}`);
                 }
             );
+
+            logger.info(`Checking event time for group ${group}`);
+            const groupTime = momentTimezone.tz(groupObj.datetime, groupObj.timezone);
+            if (momentTimezone.tz(groupObj.timezone).isAfter(groupTime)) {
+                logger.info(
+                    `Group with id ${group} event time is before now, it potentially hasn't been removed`
+                );
+                const message = await channel.messages.fetch(groupObj.id, {
+                    cache: true,
+                    force: true
+                });
+
+                const acknowledgeButton = constructAcknowledgeButton();
+                await message.reply({
+                    content: `Hey <@${groupObj.creatorID}>, this group is still active despite it's event time having passed! If this group isn't needed anymore, could you remove it or update the event time please?`,
+                    components: acknowledgeButton
+                });
+            } else {
+                logger.info(
+                    `Group with id ${group} event time is after now, no need to alert the owner.`
+                );
+            }
         });
     }
 };
