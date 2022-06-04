@@ -88,7 +88,7 @@ const handleDatetime = async (interaction, value, group) => {
         return;
     }
 
-    groupQueries.updateGroupEventTime.run(value, group, (err) => {
+    groupQueries.updateGroupEventTime.run(value, group.id, (err) => {
         if (err) return console.error(err);
 
         store.dispatch(groupDatetimeChanged({ id: group.id, datetime: value }));
@@ -118,7 +118,7 @@ const handleTimezone = async (interaction, value, group) => {
         return;
     }
 
-    groupQueries.updateGroupTimezone.run(value, group.channelID, (err) => {
+    groupQueries.updateGroupTimezone.run(value, group.id, (err) => {
         if (err) return console.error(err);
 
         store.dispatch(groupTimezoneChanged({ id: group.id, timezone: value }));
