@@ -3,12 +3,12 @@ module.exports = {
         SCHEDULED: "SCHEDULED",
         ACTIVE: "ACTIVE",
         COMPLETED: "COMPLETED",
-        CANCELED: "CANCELED"
+        CANCELED: "CANCELED",
     },
     number_status: {
         SCHEDULED: 1,
         ACTIVE: 2,
         COMPLETED: 3,
-        CANCELED: 4
-    }
+        CANCELED: 4,
+    },
 };

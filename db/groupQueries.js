@@ -44,5 +44,5 @@ module.exports = {
     removeGroupsUnderGuild,
     removeGroupsUnderChannel,
     fetchGroupByEventID,
-    removeEventIdFromGroups
+    removeEventIdFromGroups,
 };

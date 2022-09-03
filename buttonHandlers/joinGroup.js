@@ -7,7 +7,7 @@ const {
     userInGroupOfStatus,
     userInGroup,
     handleMessageAndStatusUpdates,
-    userCanSwapTo
+    userCanSwapTo,
 } = require("../helpers/groupHelpers");
 
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
             console.log(group);
             console.log(group.members);
             logger.info(
-                `Member with id ${member.id} tried to join a group with a status they already have.`
+                `Member with id ${member.id} tried to join a group with a status they already have.`,
             );
             await interaction.reply({ content: "You're already in this group!", ephemeral: true });
             return;
@@ -40,11 +40,11 @@ module.exports = {
             if (!userCanSwapTo(group, member.id, statusToAdd)) {
                 console.log(group);
                 logger.info(
-                    `Member with id ${member.id} tried to join a full group when they are already waiting.`
+                    `Member with id ${member.id} tried to join a full group when they are already waiting.`,
                 );
                 await interaction.reply({
                     content: `The group is full, and you're already in the ${groupStatus.WAITING} column!`,
-                    ephemeral: true
+                    ephemeral: true,
                 });
                 return;
             }
@@ -61,7 +61,7 @@ module.exports = {
 
             const groupObj = {
                 ...group,
-                members: newMembers
+                members: newMembers,
             };
 
             await handleMessageAndStatusUpdates(interaction, groupObj, statusToAdd, false);
@@ -71,11 +71,11 @@ module.exports = {
                 ...group,
                 members: {
                     ...group.members,
-                    [member.id]: statusToAdd
-                }
+                    [member.id]: statusToAdd,
+                },
             };
 
             await handleMessageAndStatusUpdates(interaction, groupObj, statusToAdd, true);
         }
-    }
+    },
 };

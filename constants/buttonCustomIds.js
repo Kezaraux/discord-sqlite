@@ -5,5 +5,5 @@ module.exports = {
     SHOW_INTEREST: "showInterest",
     LEAVE_GROUP: "leaveGroup",
     REMOVE_GROUP: "removeGroup",
-    ACKNOWLEDGE: "acknowledge"
+    ACKNOWLEDGE: "acknowledge",
 };

@@ -1,6 +1,5 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, Permissions } = require("discord.js");
 const momentTimezone = require("moment-timezone");
-const { Permissions } = require("discord.js");
 
 const store = require("../redux/store.js");
 const { groupAdded } = require("../redux/groupsSlice.js");
@@ -12,54 +11,54 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("create-group")
         .setDescription("A command for forming groups.")
-        .addStringOption((option) =>
+        .addStringOption(option =>
             option
                 .setName("title")
                 .setDescription("The name/title for the group.")
-                .setRequired(true)
+                .setRequired(true),
         )
-        .addIntegerOption((option) =>
+        .addIntegerOption(option =>
             option
                 .setName("size")
                 .setDescription("The number of spaces the group has for members.")
-                .setRequired(true)
+                .setRequired(true),
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
             option
                 .setName("datetime")
                 .setDescription(
-                    "The date and time of the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours. Defaults to EST."
+                    "The date and time of the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours. Defaults to EST.",
                 )
-                .setRequired(true)
+                .setRequired(true),
         )
         // OPTIONAL OPTIONS
-        .addBooleanOption((option) =>
+        .addBooleanOption(option =>
             option
                 .setName("create-event")
                 .setDescription(
-                    "Whether or not to create an Event for this group. Cancelling the event will not remove the group."
+                    "Whether or not to create an Event for this group. Cancelling the event will not remove the group.",
                 )
-                .setRequired(false)
+                .setRequired(false),
         )
-        .addChannelOption((option) =>
+        .addChannelOption(option =>
             option
                 .setName("event-channel")
                 .setDescription("A voice channel to use for guild event.")
-                .setRequired(false)
+                .setRequired(false),
         )
-        .addStringOption((option) =>
+        .addStringOption(option =>
             option
                 .setName("timezone")
                 .setDescription(
-                    "The timezone in which the event is occurring in. Use identifiers like: America/Toronto"
+                    "The timezone in which the event is occurring in. Use identifiers like: America/Toronto",
                 )
-                .setRequired(false)
+                .setRequired(false),
         )
-        .addChannelOption((option) =>
+        .addChannelOption(option =>
             option
                 .setName("channel")
                 .setDescription("The channel you want this group to appear in.")
-                .setRequired(false)
+                .setRequired(false),
         ),
     execute: async (interaction, logger) => {
         const { member, options, client, guild } = interaction;
@@ -79,7 +78,7 @@ module.exports = {
             await interaction.reply({
                 content: `The datetime string you provided wasn't valid.
                     Please follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.`,
-                ephemeral: true
+                ephemeral: true,
             });
             return;
         }
@@ -99,7 +98,7 @@ module.exports = {
             timezone,
             creatorID: member.id,
             members: {},
-            eventId: null
+            eventId: null,
         };
 
         if (toCreateEvent) {
@@ -107,7 +106,7 @@ module.exports = {
             if (!botHasPermission) {
                 await interaction.reply({
                     content: `I do not have permissions to create events. Please redo the command without event options.`,
-                    ephemeral: true
+                    ephemeral: true,
                 });
                 return;
             }
@@ -115,7 +114,7 @@ module.exports = {
             if (eventMoment.diff(momentTimezone()) < 0) {
                 await interaction.reply({
                     content: `The start time for an event must be in the future. Please use a date/time after now.`,
-                    ephemeral: true
+                    ephemeral: true,
                 });
                 return;
             }
@@ -123,7 +122,7 @@ module.exports = {
             if (!eventChannel || !eventChannel.isVoice()) {
                 await interaction.reply({
                     content: `You set createEvent to true, but didn't specify an event channel, or gave a text channel. Please redo the command, but specify a voice channel for the eventChannel option!`,
-                    ephemeral: true
+                    ephemeral: true,
                 });
                 return;
             }
@@ -133,7 +132,7 @@ module.exports = {
                 scheduledStartTime: eventMoment.toISOString(),
                 privacyLevel: "GUILD_ONLY",
                 entityType: "VOICE",
-                channel: eventChannel
+                channel: eventChannel,
             });
 
             logger.info(`Successfully created a new scheduled Guild event with id: ${newEvent.id}`);
@@ -145,7 +144,7 @@ module.exports = {
 
         const newMessage = await targetChannel.send({
             embeds: [embed],
-            components
+            components,
         });
 
         groupObj.id = newMessage.id;
@@ -168,21 +167,21 @@ module.exports = {
             timezone,
             member.id.toString(),
             groupObj.eventId?.toString(),
-            async (err) => {
+            async err => {
                 if (err) {
                     console.error(err);
                     await interaction.reply({
                         content: "I wasn't able to create your group as I encountered an error.",
-                        ephemeral: true
+                        ephemeral: true,
                     });
                     return;
                 }
 
                 await interaction.reply({
                     content: "I've created your group!",
-                    ephemeral: true
+                    ephemeral: true,
                 });
-            }
+            },
         );
-    }
+    },
 };

@@ -30,25 +30,25 @@ module.exports = {
 
         const groupObj = {
             ...group,
-            members: newMembers
+            members: newMembers,
         };
         const newEmbed = await constructGroupEmbed(guild, groupObj);
         const newButtons = constructGroupButtons();
 
-        message.edit({ embeds: [newEmbed], components: newButtons }).then(async (newMsg) => {
+        message.edit({ embeds: [newEmbed], components: newButtons }).then(async newMsg => {
             store.dispatch(
                 groupMembersSet({
                     id: group.id,
-                    members: newMembers
-                })
+                    members: newMembers,
+                }),
             );
 
-            userQueries.removeUserFromGroup.run(member.id, group.id, (err) => {
+            userQueries.removeUserFromGroup.run(member.id, group.id, err => {
                 if (err) return console.error(err);
 
                 interaction.reply({ content: "I've removed you from the group!", ephemeral: true });
                 return;
             });
         });
-    }
+    },
 };

@@ -10,5 +10,5 @@ const getUserDisplayName = async (guild, userID) => {
 
 module.exports = {
     fetchUser,
-    getUserDisplayName
+    getUserDisplayName,
 };

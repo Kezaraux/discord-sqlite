@@ -5,7 +5,7 @@ const addUserToGroup = db.prepare("INSERT INTO users VALUES (?, ?, ?)");
 
 // updateUserStatus(newStatus, userID, groupID)
 const updateUserStatus = db.prepare(
-    "UPDATE users SET groupStatus = ? WHERE userID = ? AND groupID = ?"
+    "UPDATE users SET groupStatus = ? WHERE userID = ? AND groupID = ?",
 );
 
 // removeUserFromGroup(userID, groupID)
@@ -19,12 +19,12 @@ const fetchAllUsersForGroup = db.prepare("SELECT * FROM users WHERE groupID = ?"
 
 // removeAllUsersFromGroupsUnderGuild(guildID)
 const removeAllUsersFromGroupsUnderGuild = db.prepare(
-    "DELETE FROM users WHERE groupID IN (SELECT u.groupID FROM users u INNER JOIN groups g ON messageID=groupID WHERE guildID = ?)"
+    "DELETE FROM users WHERE groupID IN (SELECT u.groupID FROM users u INNER JOIN groups g ON messageID=groupID WHERE guildID = ?)",
 );
 
 // removeAllUsersFromGroupsUnderChannel(channelID)
 const removeAllUsersFromGroupsUnderChannel = db.prepare(
-    "DELETE FROM users WHERE groupID IN (SELECT u.groupID FROM users u INNER JOIN groups g ON messageID=groupID WHERE channelID = ?)"
+    "DELETE FROM users WHERE groupID IN (SELECT u.groupID FROM users u INNER JOIN groups g ON messageID=groupID WHERE channelID = ?)",
 );
 
 module.exports = {
@@ -34,5 +34,5 @@ module.exports = {
     removeAllUsersFromGroup,
     fetchAllUsersForGroup,
     removeAllUsersFromGroupsUnderGuild,
-    removeAllUsersFromGroupsUnderChannel
+    removeAllUsersFromGroupsUnderChannel,
 };

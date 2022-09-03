@@ -48,15 +48,15 @@ const handleMessageAndStatusUpdates = async (
     groupObj,
     statusToAdd,
     adding,
-    active = true
+    active = true,
 ) => {
     const newMessage = await constructGroupMessage(interaction.guild, groupObj, active);
-    interaction.message.edit(newMessage).then(async (newMsg) => {
+    interaction.message.edit(newMessage).then(async newMsg => {
         store.dispatch(
             groupMembersSet({
                 id: groupObj.id,
-                members: groupObj.members
-            })
+                members: groupObj.members,
+            }),
         );
 
         if (adding) {
@@ -64,29 +64,29 @@ const handleMessageAndStatusUpdates = async (
                 interaction.member.id.toString(),
                 groupObj.id.toString(),
                 statusToAdd,
-                (err) => {
+                err => {
                     if (err) return console.error(err);
 
                     interaction.reply({
                         content: "I've added you to the group!",
-                        ephemeral: true
+                        ephemeral: true,
                     });
-                }
+                },
             );
         } else {
             userQueries.updateUserStatus.run(
                 statusToAdd,
                 interaction.member.id.toString(),
                 groupObj.id.toString(),
-                (err) => {
+                err => {
                     if (err) return console.error(err);
 
                     interaction.reply({
                         content: "I've updated your status in the group!",
-                        ephemeral: true
+                        ephemeral: true,
                     });
                     return;
-                }
+                },
             );
         }
     });
@@ -97,5 +97,5 @@ module.exports = {
     userInGroup,
     userInGroupOfStatus,
     userCanSwapTo,
-    handleMessageAndStatusUpdates
+    handleMessageAndStatusUpdates,
 };

@@ -5,7 +5,7 @@ const { token, clientId, publicKey, guildId } = require("./config.json");
 const interaction = new DiscordInteractions({
     applicationId: clientId,
     authToken: token,
-    publicKey
+    publicKey,
 });
 
 const displayGlobalCommands = async () => {

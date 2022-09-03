@@ -15,7 +15,7 @@ module.exports = {
         const changedProperties = _.reduce(
             oldEvent,
             (res, val, key) => (_.isEqual(val, updatedEvent[key]) ? res : res.concat(key)),
-            []
+            [],
         );
 
         if (changedProperties.length === 1 && changedProperties[0] == "status") {
@@ -37,9 +37,9 @@ module.exports = {
 
                 message
                     .edit(newMessage)
-                    .then((newMsg) => {
+                    .then(newMsg => {
                         newMsg.reply(
-                            "The event has started/completed, so I'm making this group inactive!"
+                            "The event has started/completed, so I'm making this group inactive!",
                         );
 
                         store.dispatch(groupRemoved({ id: message.id }));
@@ -68,5 +68,5 @@ module.exports = {
         //             break;
         //     }
         // }
-    }
+    },
 };

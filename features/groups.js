@@ -24,7 +24,7 @@ module.exports = {
                 timezone: row.timezone,
                 creatorID: row.ownerID,
                 members: {},
-                eventId: row.eventID
+                eventId: row.eventID,
             };
 
             // Verify the message/channel/guild is still intact
@@ -32,7 +32,7 @@ module.exports = {
 
             if (!guild) {
                 logger.info(
-                    `Unable to resolve guild. Removing groups belonging to Guild ID ${groupObj.guildId} from the database.`
+                    `Unable to resolve guild. Removing groups belonging to Guild ID ${groupObj.guildId} from the database.`,
                 );
                 combinedQueries.removeGroupsByGuildId(groupObj.guildId);
                 return;
@@ -41,7 +41,7 @@ module.exports = {
             const channel = await guild.channels.cache.get(groupObj.channelID);
             if (!channel) {
                 logger.info(
-                    `Unable to resolve channel. Removing groups belonging to channel ID ${groupObj.channelID} in Guild ID ${groupObj.guildId} from the database.`
+                    `Unable to resolve channel. Removing groups belonging to channel ID ${groupObj.channelID} in Guild ID ${groupObj.guildId} from the database.`,
                 );
                 combinedQueries.removeGroupsByChannelId(groupObj.channelID);
                 return;
@@ -50,14 +50,14 @@ module.exports = {
             try {
                 const fetchOptions = {
                     cache: true,
-                    force: true
+                    force: true,
                 };
                 // We just want to try to fetch the message
                 // If the message has been deleted this will throw an error
                 await channel.messages.fetch(groupObj.id, fetchOptions);
             } catch (e) {
                 logger.info(
-                    `Unable to resolve message. Removing message ID ${groupObj.id} from the database.`
+                    `Unable to resolve message. Removing message ID ${groupObj.id} from the database.`,
                 );
                 combinedQueries.removeGroupByGroupId(groupObj.id);
                 return;
@@ -77,38 +77,38 @@ module.exports = {
                     store.dispatch(
                         groupMemberAdded({
                             id: group,
-                            member: { id: row.userID, status: row.groupStatus }
-                        })
+                            member: { id: row.userID, status: row.groupStatus },
+                        }),
                     );
                 },
                 (err, count) => {
                     logger.info(`Done handling a total of ${count} members for group ${group}`);
-                }
+                },
             );
 
             logger.info(`Checking event time for group ${group}`);
             const groupTime = momentTimezone.tz(groupObj.datetime, groupObj.timezone);
             if (momentTimezone.tz(groupObj.timezone).isAfter(groupTime)) {
                 logger.info(
-                    `Group with id ${group} event time is before now, it potentially hasn't been removed`
+                    `Group with id ${group} event time is before now, it potentially hasn't been removed`,
                 );
                 const message = await channel.messages.fetch(groupObj.id, {
                     cache: true,
-                    force: true
+                    force: true,
                 });
 
                 const acknowledgeButton = constructAcknowledgeButton();
                 await message.reply({
                     content: `Hey <@${groupObj.creatorID}>, this group is still active despite it's event time having passed! If this group isn't needed anymore, could you remove it or update the event time please?`,
-                    components: acknowledgeButton
+                    components: acknowledgeButton,
                 });
             } else {
                 logger.info(
-                    `Group with id ${group} event time is after now, no need to alert the owner.`
+                    `Group with id ${group} event time is after now, no need to alert the owner.`,
                 );
             }
         });
-    }
+    },
 };
 
 // Note to self, if we want to use fetchAllUsersForGroup or fetchAllGroups ANYWHERE else

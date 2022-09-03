@@ -1,12 +1,10 @@
 const buttonCustomIds = require("../constants/buttonCustomIds");
 const { groupsSelector, groupMemberAdded, groupMembersSet } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
-const { constructGroupEmbed, constructGroupButtons } = require("../helpers/messageComponents");
-const userQueries = require("../db/userQueries.js");
 const {
     userInGroupOfStatus,
     userInGroup,
-    handleMessageAndStatusUpdates
+    handleMessageAndStatusUpdates,
 } = require("../helpers/groupHelpers");
 const groupStatus = require("../constants/groupStatus");
 
@@ -23,7 +21,7 @@ module.exports = {
             console.log(group);
             console.log(group.members);
             logger.info(
-                `Member with id ${member.id} tried to join a group with a status they already have.`
+                `Member with id ${member.id} tried to join a group with a status they already have.`,
             );
             await interaction.reply({ content: "You're already in this group!", ephemeral: true });
             return;
@@ -44,7 +42,7 @@ module.exports = {
 
             const groupObj = {
                 ...group,
-                members: newMembers
+                members: newMembers,
             };
 
             await handleMessageAndStatusUpdates(interaction, groupObj, groupStatus.UNKNOWN, false);
@@ -78,12 +76,12 @@ module.exports = {
             // HANDLE A NEW USER JOINING GROUP
             const newMembers = {
                 ...group.members,
-                [member.id]: groupStatus.UNKNOWN
+                [member.id]: groupStatus.UNKNOWN,
             };
 
             const groupObj = {
                 ...group,
-                members: newMembers
+                members: newMembers,
             };
 
             await handleMessageAndStatusUpdates(interaction, groupObj, groupStatus.UNKNOWN, true);
@@ -114,5 +112,5 @@ module.exports = {
             //     );
             // });
         }
-    }
+    },
 };

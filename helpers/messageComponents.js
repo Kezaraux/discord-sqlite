@@ -1,18 +1,21 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle } = require("discord.js");
 const momentTz = require("moment-timezone");
 
 const groupStatus = require("../constants/groupStatus");
 const buttonCustomIds = require("../constants/buttonCustomIds");
-const { getUserDisplayName, fetchUser } = require("../helpers/userHelpers.js");
+const { getUserDisplayName } = require("../helpers/userHelpers.js");
+
+const constructEmbedField = (name, value, inline = false) => ({ name, value, inline });
 
 const constructGroupEmbed = async (guild, groupObj, active = true) => {
     const { title, size, datetime, timezone, members, guildId, creatorID, eventId } = groupObj;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(`Number of members needed: ${size}`);
     const eventMoment = momentTz.tz(datetime, timezone ?? "America/Toronto");
     const eventTimestring = eventMoment.format("dddd MMMM Do YYYY h:mm A z");
-    embed.addField("Time", eventTimestring, false);
+    const fields = [];
+    fields.push(constructEmbedField("Time", eventTimestring));
 
     const confirmed = [];
     const waiting = [];
@@ -32,79 +35,89 @@ const constructGroupEmbed = async (guild, groupObj, active = true) => {
                 break;
             default:
                 console.log(
-                    `Unknown member status encountered. It was: ${members[member]}. Check group handle reaction.`
+                    `Unknown member status encountered. It was: ${members[member]}. Check group handle reaction.`,
                 );
         }
     }
 
-    embed.addField(
-        `${groupStatus.CONFIRMED} (${confirmed.length}/${size})`,
-        confirmed.join("\n") || "None",
-        true
+    fields.push(
+        constructEmbedField(
+            `${groupStatus.CONFIRMED} (${confirmed.length}/${size})`,
+            confirmed.join("\n") || "None",
+            true,
+        ),
     );
-    embed.addField(
-        `${groupStatus.WAITING} (${waiting.length})`,
-        waiting.join("\n") || "None",
-        true
+    fields.push(
+        constructEmbedField(
+            `${groupStatus.WAITING} (${waiting.length})`,
+            waiting.join("\n") || "None",
+            true,
+        ),
     );
-    embed.addField(
-        `${groupStatus.UNKNOWN} (${unknown.length})`,
-        unknown.join("\n") || "None",
-        true
+    fields.push(
+        constructEmbedField(
+            `${groupStatus.UNKNOWN} (${unknown.length})`,
+            unknown.join("\n") || "None",
+            true,
+        ),
     );
 
     if (!active) {
-        embed.addField(`Inactive`, `This group is no longer active!`, false);
+        fields.push(constructEmbedField(`Inactive`, `This group is no longer active!`));
     }
 
     if (eventId) {
         const scheduledEvent = await guild.scheduledEvents.fetch(eventId);
         const url = await scheduledEvent.createInviteURL();
-        embed.addField(`Event URL`, `${url}`, false);
+        fields.push(constructEmbedField(`Event URL`, `${url}`));
     }
 
-    embed.setFooter(
-        `Group created by: ${await getUserDisplayName(guild, creatorID)}\nGroup ID: ${groupObj.id}`
-    );
+    embed.addFields(...fields);
+
+    embed.setFooter({
+        text: `Group created by: ${await getUserDisplayName(guild, creatorID)}\nGroup ID: ${
+            groupObj.id
+        }`,
+    });
 
     return embed;
 };
 
 const constructGroupButtons = () => {
-    const joinRow = new MessageActionRow().addComponents(
-        new MessageButton()
+    const joinRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
             .setCustomId(buttonCustomIds.JOIN_GROUP)
             .setLabel("Join group")
-            .setStyle("SUCCESS"),
-        new MessageButton()
+            .setStyle(ButtonStyle.Success),
+        new ButtonBuilder()
             .setCustomId(buttonCustomIds.EXTRA)
             .setLabel("Join as extra")
-            .setStyle("SUCCESS"),
-        new MessageButton()
+            .setStyle(ButtonStyle.Success),
+        new ButtonBuilder()
             .setCustomId(buttonCustomIds.SHOW_INTEREST)
             .setLabel("Unsure but interested")
-            .setStyle("PRIMARY")
+            .setStyle(ButtonStyle.Primary),
     );
-    const leaveRow = new MessageActionRow().addComponents(
-        new MessageButton()
+    const leaveRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
             .setCustomId(buttonCustomIds.LEAVE_GROUP)
             .setLabel("Leave group")
-            .setStyle("SECONDARY"),
-        new MessageButton()
+            .setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder()
             .setCustomId(buttonCustomIds.REMOVE_GROUP)
             .setLabel("Remove group")
-            .setStyle("DANGER")
+            .setStyle(ButtonStyle.Danger),
     );
 
     return [joinRow, leaveRow];
 };
 
 const constructAcknowledgeButton = () => {
-    const mainRow = new MessageActionRow().addComponents(
-        new MessageButton()
+    const mainRow = new ActionRowBuilder().addComponents(
+        new ActionRowBuilder()
             .setCustomId(buttonCustomIds.ACKNOWLEDGE)
             .setLabel("Acknowledge")
-            .setStyle("SUCCESS")
+            .setStyle(ButtonStyle.Success),
     );
 
     return [mainRow];
@@ -123,5 +136,5 @@ module.exports = {
     constructGroupEmbed,
     constructGroupButtons,
     constructGroupMessage,
-    constructAcknowledgeButton
+    constructAcknowledgeButton,
 };

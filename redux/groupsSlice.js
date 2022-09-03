@@ -15,7 +15,7 @@ const { createSlice, createEntityAdapter } = require("@reduxjs/toolkit");
 // }
 
 const groupsAdapter = createEntityAdapter();
-const groupsSelector = groupsAdapter.getSelectors((state) => state.groups);
+const groupsSelector = groupsAdapter.getSelectors(state => state.groups);
 
 const groupsSlice = createSlice({
     name: "groups",
@@ -88,8 +88,8 @@ const groupsSlice = createSlice({
             if (group) {
                 group.eventId = value;
             }
-        }
-    }
+        },
+    },
 });
 
 const {
@@ -102,7 +102,7 @@ const {
     groupTitleChanged,
     groupTimezoneChanged,
     groupDatetimeChanged,
-    groupEventIdChanged
+    groupEventIdChanged,
 } = groupsSlice.actions;
 
 module.exports = {
@@ -117,5 +117,5 @@ module.exports = {
     groupTitleChanged,
     groupDatetimeChanged,
     groupTimezoneChanged,
-    groupEventIdChanged
+    groupEventIdChanged,
 };
