@@ -38,7 +38,7 @@ const updateMessage = async (interaction, groupId) => {
 
     const channel = await interaction.guild.channels.fetch(groupObj.channelID);
     const message =
-        (await channel?.messages?.fetch(groupObj.id)) ||
+        (await channel?.messages?.fetch({ message: groupObj.id, cache: true, force: true })) ??
         (await channel?.messages?.cache?.find(m => m.id === groupObj.id));
 
     message
