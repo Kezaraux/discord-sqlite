@@ -32,6 +32,15 @@ for (const file of commandFiles) {
     cmds.push(command.data);
 }
 
+// Register context menu commands - handled same as commands
+const contextMenuFiles = fs.readdirSync("./contextMenus").filter(file => file.endsWith(".js"));
+for (const file of contextMenuFiles) {
+    const contextMenuCommand = require(`./contextMenus/${file}`);
+    logger.info(`Registering context menu command: ${contextMenuCommand.data.name}`);
+    client.commands.set(contextMenuCommand.data.name, contextMenuCommand);
+    cmds.push(contextMenuCommand.data);
+}
+
 // Register event listeners
 const eventFiles = fs.readdirSync("./events").filter(file => file.endsWith(".js"));
 for (const file of eventFiles) {
@@ -48,9 +57,11 @@ for (const file of eventFiles) {
 }
 
 // Register button handlers
-const buttonHandlerFiles = fs.readdirSync("./buttonHandlers").filter(file => file.endsWith(".js"));
+const buttonHandlerFiles = fs
+    .readdirSync("./messageComponentHandlers")
+    .filter(file => file.endsWith(".js"));
 for (const file of buttonHandlerFiles) {
-    const handler = require(`./buttonHandlers/${file}`);
+    const handler = require(`./messageComponentHandlers/${file}`);
     logger.info(`Registering button handler: ${handler.name}`);
     client.buttonHandlers.set(handler.name, handler);
 }
