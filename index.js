@@ -15,6 +15,7 @@ const client = new Client({
 });
 client.commands = new Collection();
 client.buttonHandlers = new Collection();
+client.modalHandlers = new Collection();
 
 const logger = winston.createLogger({
     transports: [new winston.transports.Console()],
@@ -52,6 +53,14 @@ for (const file of buttonHandlerFiles) {
     const handler = require(`./buttonHandlers/${file}`);
     logger.info(`Registering button handler: ${handler.name}`);
     client.buttonHandlers.set(handler.name, handler);
+}
+
+// Register modal handlers
+const modalHandlerFiles = fs.readdirSync("./modalHandlers").filter(file => file.endsWith(".js"));
+for (const file of modalHandlerFiles) {
+    const handler = require(`./modalHandlers/${file}`);
+    logger.info(`Registering modal handler: ${handler.name}`);
+    client.modalHandlers.set(handler.name, handler);
 }
 
 client.once("ready", async () => {

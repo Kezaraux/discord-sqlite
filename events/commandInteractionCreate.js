@@ -1,8 +1,11 @@
+const { InteractionType } = require("discord.js");
+
 module.exports = {
     name: "interactionCreate",
     once: false,
     execute: async ({ 0: interaction, client, logger }) => {
-        if (!interaction.isCommand()) return;
+        // Handles both commands and context menu commands
+        if (interaction.type !== InteractionType.ApplicationCommand) return;
         logger.info("Handling a command");
 
         const { commandName } = interaction;
