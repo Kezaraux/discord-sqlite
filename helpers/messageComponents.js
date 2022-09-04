@@ -114,7 +114,7 @@ const constructGroupButtons = () => {
 
 const constructAcknowledgeButton = () => {
     const mainRow = new ActionRowBuilder().addComponents(
-        new ActionRowBuilder()
+        new ButtonBuilder()
             .setCustomId(buttonCustomIds.ACKNOWLEDGE)
             .setLabel("Acknowledge")
             .setStyle(ButtonStyle.Success),
