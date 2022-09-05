@@ -3,6 +3,12 @@ const { SlashCommandBuilder } = require("discord.js");
 const editSubCommands = require("../constants/editSubCommands");
 const store = require("../redux/store.js");
 const { groupsSelector } = require("../redux/groupsSlice.js");
+const {
+    handleDatetime,
+    handleSize,
+    handleTimezone,
+    handleTitle,
+} = require("../helpers/editCommandHelpers");
 
 module.exports = {
     data: new SlashCommandBuilder()
