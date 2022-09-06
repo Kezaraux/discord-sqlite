@@ -16,7 +16,7 @@ module.exports = {
 
             const groupObj = {
                 id: row.messageID,
-                guildId: row.guildID,
+                guildID: row.guildID,
                 channelID: row.channelID,
                 title: row.title,
                 size: row.size,
@@ -24,24 +24,24 @@ module.exports = {
                 timezone: row.timezone,
                 creatorID: row.ownerID,
                 members: {},
-                eventId: row.eventID,
+                eventID: row.eventID,
             };
 
             // Verify the message/channel/guild is still intact
-            const guild = await client.guilds.cache.get(groupObj.guildId);
+            const guild = await client.guilds.cache.get(groupObj.guildID);
 
             if (!guild) {
                 logger.info(
-                    `Unable to resolve guild. Removing groups belonging to Guild ID ${groupObj.guildId} from the database.`,
+                    `Unable to resolve guild. Removing groups belonging to Guild ID ${groupObj.guildID} from the database.`,
                 );
-                combinedQueries.removeGroupsByGuildId(groupObj.guildId);
+                combinedQueries.removeGroupsByGuildId(groupObj.guildID);
                 return;
             }
 
             const channel = await guild.channels.cache.get(groupObj.channelID);
             if (!channel) {
                 logger.info(
-                    `Unable to resolve channel. Removing groups belonging to channel ID ${groupObj.channelID} in Guild ID ${groupObj.guildId} from the database.`,
+                    `Unable to resolve channel. Removing groups belonging to channel ID ${groupObj.channelID} in Guild ID ${groupObj.guildID} from the database.`,
                 );
                 combinedQueries.removeGroupsByChannelId(groupObj.channelID);
                 return;

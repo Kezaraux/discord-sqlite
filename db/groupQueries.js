@@ -1,6 +1,6 @@
 const { db } = require("./db.js");
 
-// createGroup(msgId, chnlId, guildId, title, size, when, timezone, ownerId, eventId)
+// createGroup(msgId, channelID, guildID, title, size, when, timezone, ownerID, eventID)
 const createGroup = db.prepare("INSERT INTO groups VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 // updateGroupTitle(msgId, newTitle)

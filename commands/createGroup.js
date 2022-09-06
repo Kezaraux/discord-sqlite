@@ -91,14 +91,14 @@ module.exports = {
         const targetChannel = fetchedChannel || interaction.channel;
 
         const groupObj = {
-            guildId: member.guild.id,
+            guildID: member.guild.id,
             title,
             size,
             datetime,
             timezone,
             creatorID: member.id,
             members: {},
-            eventId: null,
+            eventID: null,
         };
 
         if (toCreateEvent) {
@@ -136,7 +136,7 @@ module.exports = {
             });
 
             logger.info(`Successfully created a new scheduled Guild event with id: ${newEvent.id}`);
-            groupObj.eventId = newEvent.id;
+            groupObj.eventID = newEvent.id;
         }
 
         const embed = await constructGroupEmbed(guild, groupObj);
@@ -148,7 +148,7 @@ module.exports = {
         });
 
         groupObj.id = newMessage.id;
-        groupObj.channelId = newMessage.channel.id;
+        groupObj.channelID = newMessage.channel.id;
 
         store.dispatch(groupAdded(groupObj));
 
@@ -160,13 +160,13 @@ module.exports = {
         createGroup.run(
             newMessage.id.toString(),
             newMessage.channel.id.toString(),
-            newMessage.guildId.toString(),
+            newMessage.guildID.toString(),
             title,
             size,
             datetime,
             timezone,
             member.id.toString(),
-            groupObj.eventId?.toString(),
+            groupObj?.eventID?.toString(),
             async err => {
                 if (err) {
                     console.error(err);

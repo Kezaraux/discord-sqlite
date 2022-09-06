@@ -10,20 +10,20 @@ const removeGroupByGroupId = groupId => {
     });
 };
 
-const removeGroupsByGuildId = guildId => {
-    userQueries.removeAllUsersFromGroupsUnderGuild.run(guildId, err => {
+const removeGroupsByGuildId = guildID => {
+    userQueries.removeAllUsersFromGroupsUnderGuild.run(guildID, err => {
         if (err) console.error(err);
     });
-    groupQueries.removeAllUsersFromGroupsUnderGuild.run(guildId, err => {
+    groupQueries.removeAllUsersFromGroupsUnderGuild.run(guildID, err => {
         if (err) console.error(err);
     });
 };
 
-const removeGroupsByChannelId = channelId => {
-    userQueries.removeAllUsersFromGroupsUnderChannel.run(channelId, err => {
+const removeGroupsByChannelId = channelID => {
+    userQueries.removeAllUsersFromGroupsUnderChannel.run(channelID, err => {
         if (err) console.error(err);
     });
-    groupQueries.removeAllUsersFromGroupsUnderChannel.run(channelId, err => {
+    groupQueries.removeAllUsersFromGroupsUnderChannel.run(channelID, err => {
         if (err) console.error(err);
     });
 };

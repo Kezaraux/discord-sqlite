@@ -8,7 +8,7 @@ const { getUserDisplayName } = require("../helpers/userHelpers.js");
 const constructEmbedField = (name, value, inline = false) => ({ name, value, inline });
 
 const constructGroupEmbed = async (guild, groupObj, active = true) => {
-    const { title, size, datetime, timezone, members, guildId, creatorID, eventId } = groupObj;
+    const { title, size, datetime, timezone, members, creatorID, eventID } = groupObj;
     const embed = new EmbedBuilder()
         .setTitle(title)
         .setDescription(`Number of members needed: ${size}`);
@@ -66,8 +66,8 @@ const constructGroupEmbed = async (guild, groupObj, active = true) => {
         fields.push(constructEmbedField(`Inactive`, `This group is no longer active!`));
     }
 
-    if (eventId) {
-        const scheduledEvent = await guild.scheduledEvents.fetch(eventId);
+    if (eventID) {
+        const scheduledEvent = await guild.scheduledEvents.fetch(eventID);
         const url = await scheduledEvent.createInviteURL();
         fields.push(constructEmbedField(`Event URL`, `${url}`));
     }

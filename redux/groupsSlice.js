@@ -1,14 +1,14 @@
 const { createSlice, createEntityAdapter } = require("@reduxjs/toolkit");
 
-// messageId: {
-// channelId,
-// guildId,
+// messageID: {
+// channelID,
+// guildID,
 // 	title,
 // 	size,
 //  when,
 //  timezone,
 //  creatorID,
-//  eventId,
+//  eventID,
 // 	members: {
 // 		id: status
 // 	}
@@ -86,7 +86,7 @@ const groupsSlice = createSlice({
             const { id, value } = action.payload;
             const group = state.entities[id];
             if (group) {
-                group.eventId = value;
+                group.eventID = value;
             }
         },
     },

@@ -40,6 +40,15 @@ const updateMessage = async (interaction, groupId) => {
         (await channel?.messages?.fetch({ message: groupObj.id, cache: true, force: true })) ??
         (await channel?.messages?.cache?.find(m => m.id === groupObj.id));
 
+    if (!message) {
+        console.log("No message found for update message helper");
+        console.log({ groupObj });
+        console.log({ message });
+        channel.send(
+            "Unable to find the message to edit, but the database has been updated. Update the group to see the changes take effect.",
+        );
+    }
+
     message
         .edit({ embeds: [newEmbed], components: newButtons })
         .then(newMsg => console.log(`Edited message for group ${groupObj.id}`))
@@ -51,7 +60,7 @@ const handleTitle = async (interaction, value, group) => {
         if (err) return console.error(err);
 
         store.dispatch(groupTitleChanged({ id: group.id, title: value }));
-        updateScheduledEvent(interaction, group.eventId, "name", value);
+        updateScheduledEvent(interaction, group.eventID, "name", value);
         updateMessage(interaction, group.id);
 
         interaction.reply({
@@ -93,7 +102,7 @@ const handleDatetime = async (interaction, value, group) => {
         store.dispatch(groupDatetimeChanged({ id: group.id, datetime: value }));
         updateScheduledEvent(
             interaction,
-            group.eventId,
+            group.eventID,
             "scheduledStartTime",
             eventMoment.toISOString(),
         );
@@ -123,7 +132,7 @@ const handleTimezone = async (interaction, value, group) => {
         store.dispatch(groupTimezoneChanged({ id: group.id, timezone: value }));
         updateScheduledEvent(
             interaction,
-            group.eventId,
+            group.eventID,
             "scheduledStartTime",
             eventMoment.toISOString(),
         );

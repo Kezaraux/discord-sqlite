@@ -43,12 +43,12 @@ module.exports = {
         store.dispatch(groupRemoved({ id: message.id }));
         combinedQueries.removeGroupByGroupId(group.id);
 
-        if (group.eventId) {
-            const guildEvent = await interaction.guild.scheduledEvents.fetch(group.eventId);
+        if (group.eventID) {
+            const guildEvent = await interaction.guild.scheduledEvents.fetch(group.eventID);
             guildEvent
                 .delete()
                 .then(() => {
-                    console.log(`Deleted the event ${group.eventId} for group ${group.id}`);
+                    console.log(`Deleted the event ${group.eventID} for group ${group.id}`);
                 })
                 .catch(console.error);
         }
