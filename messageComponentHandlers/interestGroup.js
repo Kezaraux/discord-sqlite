@@ -1,5 +1,5 @@
 const buttonCustomIds = require("../constants/buttonCustomIds");
-const { groupsSelector, groupMemberAdded, groupMembersSet } = require("../redux/groupsSlice.js");
+const { groupsSelector } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
 const {
     userInGroupOfStatus,

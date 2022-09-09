@@ -1,4 +1,4 @@
-const { Permissions } = require("discord.js");
+const { PermissionsBitField } = require("discord.js");
 
 const buttonCustomIds = require("../constants/buttonCustomIds");
 const { groupsSelector, groupRemoved } = require("../redux/groupsSlice.js");
@@ -25,11 +25,13 @@ module.exports = {
 
         if (
             member.id !== group.creatorID &&
-            !member.permissionsIn(message.channel).has(Permissions.FLAGS.MANAGE_MESSAGES)
+            !member.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)
         ) {
             console.log(member.id, group.creatorID);
             console.log(
-                !member.permissionsIn(message.channel).has(Permissions.FLAGS.MANAGE_MESSAGES),
+                !member
+                    .permissionsIn(message.channel)
+                    .has(PermissionsBitField.Flags.ManageMessages),
             );
             interaction.reply({
                 content: `The group can only be removed if:

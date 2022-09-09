@@ -1,5 +1,6 @@
-const { SlashCommandBuilder, Permissions } = require("discord.js");
+const { SlashCommandBuilder, PermissionsBitField } = require("discord.js");
 const momentTimezone = require("moment-timezone");
+require("moment-parseplus");
 
 const store = require("../redux/store.js");
 const { groupAdded } = require("../redux/groupsSlice.js");
@@ -63,8 +64,6 @@ module.exports = {
     execute: async (interaction, logger) => {
         const { member, options, client, guild } = interaction;
 
-        // console.log(options.data); // [ {name, type, value}, ... ]
-
         const title = options.getString("title");
         const size = options.getInteger("size");
         const datetime = options.getString("datetime");
@@ -102,7 +101,9 @@ module.exports = {
         };
 
         if (toCreateEvent) {
-            const botHasPermission = guild.me.permissions.has(Permissions.FLAGS.MANAGE_EVENTS);
+            const botHasPermission = guild.me.permissions.has(
+                PermissionsBitField.Flags.ManageEvents,
+            );
             if (!botHasPermission) {
                 await interaction.reply({
                     content: `I do not have permissions to create events. Please redo the command without event options.`,
@@ -160,7 +161,7 @@ module.exports = {
         createGroup.run(
             newMessage.id.toString(),
             newMessage.channel.id.toString(),
-            newMessage.guildID.toString(),
+            newMessage.guildId.toString(),
             title,
             size,
             datetime,

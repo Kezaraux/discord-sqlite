@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle } = require("discord.js");
 const momentTz = require("moment-timezone");
+require("moment-parseplus");
 
 const groupStatus = require("../constants/groupStatus");
 const buttonCustomIds = require("../constants/buttonCustomIds");
@@ -13,9 +14,9 @@ const constructGroupEmbed = async (guild, groupObj, active = true) => {
         .setTitle(title)
         .setDescription(`Number of members needed: ${size}`);
     const eventMoment = momentTz.tz(datetime, timezone ?? "America/Toronto");
-    const eventTimestring = eventMoment.format("dddd MMMM Do YYYY h:mm A z");
+    // const eventTimestring = eventMoment.format("dddd MMMM Do YYYY h:mm A z");
     const fields = [];
-    fields.push(constructEmbedField("Time", eventTimestring));
+    fields.push(constructEmbedField("Time", `<t:${eventMoment.unix()}:F>`));
 
     const confirmed = [];
     const waiting = [];
