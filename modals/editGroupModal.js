@@ -8,10 +8,10 @@ const {
 
 const buttonCustomIds = require("../constants/buttonCustomIds");
 
-const constructEditGroupModal = (groupName, groupId) =>
+const constructEditGroupModal = groupId =>
     new ModalBuilder()
         .setCustomId(buttonCustomIds.EDIT_MODAL)
-        .setTitle(`Edit group: ${groupName} - ${groupId}`)
+        .setTitle(`Edit group: ${groupId}`)
         .addComponents(
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()

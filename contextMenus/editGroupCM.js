@@ -36,7 +36,7 @@ module.exports = {
             return;
         }
 
-        const modal = constructEditGroupModal(groupObj.title, messageId);
+        const modal = constructEditGroupModal(messageId);
         await interaction.showModal(modal);
     },
 };
