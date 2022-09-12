@@ -5,7 +5,7 @@ const { createSlice, createEntityAdapter } = require("@reduxjs/toolkit");
 // guildID,
 // 	title,
 // 	size,
-//  when,
+//  datetime,
 //  timezone,
 //  creatorID,
 //  eventID,

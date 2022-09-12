@@ -118,10 +118,18 @@ const handleDatetime = async (interaction, value, group) => {
 };
 
 const handleTimezone = async (interaction, value, group) => {
-    const eventMoment = momentTimezone.tz(value, "America/Toronto");
+    if (!momentTimezone.tz.names().includes(value)) {
+        await interaction.reply({
+            content: `The timezone you provided wasn't recognized. Try something in the format of America/Toronto.`,
+            ephemeral: true,
+        });
+        return;
+    }
+
+    const eventMoment = momentTimezone.tz(group.datetime, value);
     if (!eventMoment.isValid()) {
         await interaction.reply({
-            content: `The datetime string you provided wasn't valid. Please follow the format: YYYY-MM-DD HH:mm where HH is the hour in 24 hours.`,
+            content: `The timezone you provided wasn't recognized. Try something in the format of America/Toronto.`,
             ephemeral: true,
         });
         return;
