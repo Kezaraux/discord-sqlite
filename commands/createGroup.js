@@ -72,6 +72,14 @@ module.exports = {
         const timezone = options.getString("timezone", false) ?? "America/Toronto";
         const channel = options.getChannel("channel", false);
 
+        if (!momentTimezone.tz.names().includes(timezone)) {
+            await interaction.reply({
+                content: `The timezone you provided wasn't recognized. Try something in the format of America/Toronto.`,
+                ephemeral: true,
+            });
+            return;
+        }
+
         const eventMoment = momentTimezone.tz(datetime, timezone);
         if (!eventMoment.isValid()) {
             await interaction.reply({
