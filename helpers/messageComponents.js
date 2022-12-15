@@ -48,20 +48,24 @@ const constructGroupEmbed = async (guild, groupObj, active = true) => {
             true,
         ),
     );
-    fields.push(
-        constructEmbedField(
-            `${groupStatus.WAITING} (${waiting.length})`,
-            waiting.join("\n") || "None",
-            true,
-        ),
-    );
-    fields.push(
-        constructEmbedField(
-            `${groupStatus.UNKNOWN} (${unknown.length})`,
-            unknown.join("\n") || "None",
-            true,
-        ),
-    );
+    if (waiting.length !== 0) {
+        fields.push(
+            constructEmbedField(
+                `${groupStatus.WAITING} (${waiting.length})`,
+                waiting.join("\n") || "None",
+                true,
+            ),
+        );
+    }
+    if (unknown.length !== 0) {
+        fields.push(
+            constructEmbedField(
+                `${groupStatus.UNKNOWN} (${unknown.length})`,
+                unknown.join("\n") || "None",
+                true,
+            ),
+        );
+    }
 
     if (!active) {
         fields.push(constructEmbedField(`Inactive`, `This group is no longer active!`));
