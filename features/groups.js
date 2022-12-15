@@ -7,6 +7,7 @@ const groupQueries = require("../db/groupQueries.js");
 const userQueries = require("../db/userQueries.js");
 const combinedQueries = require("../db/combinedQueries.js");
 const { constructAcknowledgeButton } = require("../helpers/messageComponents.js");
+const { removeGroupWithMessage } = require("../helpers/groupHelpers");
 
 module.exports = {
     name: "groupFeature",
@@ -98,11 +99,7 @@ module.exports = {
                     force: true,
                 });
 
-                const acknowledgeButton = constructAcknowledgeButton();
-                await message.reply({
-                    content: `Hey <@${groupObj.creatorID}>, this group is still active despite it's event time having passed! If this group isn't needed anymore, could you remove it or update the event time please?`,
-                    components: acknowledgeButton,
-                });
+                await removeGroupWithMessage(message);
             } else {
                 logger.info(
                     `Group with id ${group} event time is after now, no need to alert the owner.`,

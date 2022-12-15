@@ -5,6 +5,7 @@ const { groupsSelector, groupRemoved } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
 const combinedQueries = require("../db/combinedQueries.js");
 const { constructGroupMessage } = require("../helpers/messageComponents.js");
+const { removeGroupWithMessage } = require("../helpers/groupHelpers");
 
 module.exports = {
     name: buttonCustomIds.REMOVE_GROUP,
@@ -42,43 +43,46 @@ module.exports = {
             return;
         }
 
-        store.dispatch(groupRemoved({ id: message.id }));
-        combinedQueries.removeGroupByGroupId(group.id);
+        const result = await removeGroupWithMessage(message);
+        interaction.reply({ content: result.message, ephemeral: true });
 
-        if (group.eventID) {
-            const guildEvent = await interaction.guild.scheduledEvents.fetch(group.eventID);
-            guildEvent
-                .delete()
-                .then(() => {
-                    console.log(`Deleted the event ${group.eventID} for group ${group.id}`);
-                })
-                .catch(console.error);
-        }
+        // store.dispatch(groupRemoved({ id: message.id }));
+        // combinedQueries.removeGroupByGroupId(group.id);
 
-        const newMessage = await constructGroupMessage(interaction.guild, group, false);
+        // if (group.eventID) {
+        //     const guildEvent = await interaction.guild.scheduledEvents.fetch(group.eventID);
+        //     guildEvent
+        //         .delete()
+        //         .then(() => {
+        //             console.log(`Deleted the event ${group.eventID} for group ${group.id}`);
+        //         })
+        //         .catch(console.error);
+        // }
 
-        message
-            .edit(newMessage)
-            .then(updatedMessage => {
-                console.log(
-                    `Successfully removed group and edited message for group ${message.id}`,
-                );
-                interaction.reply({
-                    content:
-                        "I've removed the group! Consider replying to the group message with a reason for it is no longer active.",
-                    ephemeral: true,
-                });
-            })
-            .catch(err => {
-                console.log(
-                    `Something went wrong when editing the message for group ${message.id}`,
-                );
-                console.error(err);
-                interaction.reply({
-                    content:
-                        "Something went wrong when I tried to edit the group message. The group has been removed, please delete the message.",
-                    ephemeral: true,
-                });
-            });
+        // const newMessage = await constructGroupMessage(interaction.guild, group, false);
+
+        // message
+        //     .edit(newMessage)
+        //     .then(updatedMessage => {
+        //         console.log(
+        //             `Successfully removed group and edited message for group ${message.id}`,
+        //         );
+        //         interaction.reply({
+        //             content:
+        //                 "I've removed the group! Consider replying to the group message with a reason for it is no longer active.",
+        //             ephemeral: true,
+        //         });
+        //     })
+        //     .catch(err => {
+        //         console.log(
+        //             `Something went wrong when editing the message for group ${message.id}`,
+        //         );
+        //         console.error(err);
+        //         interaction.reply({
+        //             content:
+        //                 "Something went wrong when I tried to edit the group message. The group has been removed, please delete the message.",
+        //             ephemeral: true,
+        //         });
+        //     });
     },
 };

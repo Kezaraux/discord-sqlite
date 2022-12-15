@@ -3,7 +3,7 @@ const winston = require("winston");
 const { REST } = require("@discordjs/rest");
 
 const { Client, Collection, Routes, GatewayIntentBits } = require("discord.js");
-const { token, guildId, clientId, token2, clientId2 } = require("./config.json");
+const { token, guildId, clientId } = require("./config.json");
 
 const client = new Client({
     intents: [
