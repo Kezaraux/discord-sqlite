@@ -6,21 +6,21 @@ const {
     SelectMenuBuilder,
 } = require("discord.js");
 
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 
 const constructEditGroupModal = groupId =>
     new ModalBuilder()
-        .setCustomId(buttonCustomIds.EDIT_MODAL)
+        .setCustomId(messageComponentCustomIds.EDIT_MODAL)
         .setTitle(`Edit group: ${groupId}`)
         .addComponents(
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()
-                    .setCustomId(buttonCustomIds.EDIT_SELECT)
+                    .setCustomId(messageComponentCustomIds.EDIT_SELECT)
                     .setLabel("Group property to edit")
                     .setPlaceholder("One of: size, title, when, timezone")
                     .setStyle(TextInputStyle.Short),
                 // new SelectMenuBuilder()
-                //     .setCustomId(buttonCustomIds.EDIT_SELECT)
+                //     .setCustomId(messageComponentCustomIds.EDIT_SELECT)
                 //     .setPlaceholder("Select group property to edit")
                 //     .addOptions(
                 //         {
@@ -49,19 +49,19 @@ const constructEditGroupModal = groupId =>
             ),
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()
-                    .setCustomId(buttonCustomIds.EDIT_VALUE)
+                    .setCustomId(messageComponentCustomIds.EDIT_VALUE)
                     .setLabel("New value for property:")
                     .setPlaceholder("If changing when, use format: YYYY-MM-DD HH:mm")
                     .setStyle(TextInputStyle.Short),
             ),
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()
-                    .setCustomId(buttonCustomIds.EDIT_GROUPID)
+                    .setCustomId(messageComponentCustomIds.EDIT_GROUPID)
                     .setLabel(`Group ID - Do not edit`)
                     .setValue(groupId)
                     .setStyle(TextInputStyle.Short),
                 // new SelectMenuBuilder()
-                //     .setCustomId(buttonCustomIds.EDIT_GROUPID)
+                //     .setCustomId(messageComponentCustomIds.EDIT_GROUPID)
                 //     .setDisabled(true)
                 //     .setOptions({
                 //         label: `Group ID: ${groupId}`,

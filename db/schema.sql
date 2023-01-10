@@ -18,3 +18,9 @@ CREATE TABLE IF NOT EXISTS users(
     PRIMARY KEY (userID, groupID),
     FOREIGN KEY (groupID) REFERENCES groups (messageID)
 );
+
+CREATE TABLE IF NOT EXISTS roles(
+    guildID TEXT NOT NULL,
+    roleID TEXT NOT NULL,
+    PRIMARY KEY (roleID)
+);

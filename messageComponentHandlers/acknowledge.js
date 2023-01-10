@@ -1,7 +1,7 @@
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 
 module.exports = {
-    name: buttonCustomIds.ACKNOWLEDGE,
+    name: messageComponentCustomIds.ACKNOWLEDGE,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling acknowledge button");
         const { message, member } = interaction;

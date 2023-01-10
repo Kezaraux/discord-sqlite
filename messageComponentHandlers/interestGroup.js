@@ -1,4 +1,4 @@
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 const { groupsSelector } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
 const {
@@ -9,7 +9,7 @@ const {
 const groupStatus = require("../constants/groupStatus");
 
 module.exports = {
-    name: buttonCustomIds.SHOW_INTEREST,
+    name: messageComponentCustomIds.SHOW_INTEREST,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling interest group");
         const { message, member, guild } = interaction;

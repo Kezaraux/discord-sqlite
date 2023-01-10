@@ -10,4 +10,5 @@ module.exports = {
     EDIT_SELECT: "editSelect",
     EDIT_VALUE: "editValue",
     EDIT_GROUPID: "editGroupID",
+    ROLE_SELECT: "roleSelect",
 };

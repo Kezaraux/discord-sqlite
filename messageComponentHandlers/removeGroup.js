@@ -1,6 +1,6 @@
 const { PermissionsBitField } = require("discord.js");
 
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 const { groupsSelector, groupRemoved } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
 const combinedQueries = require("../db/combinedQueries.js");
@@ -8,7 +8,7 @@ const { constructGroupMessage } = require("../helpers/messageComponents.js");
 const { removeGroupWithMessage } = require("../helpers/groupHelpers");
 
 module.exports = {
-    name: buttonCustomIds.REMOVE_GROUP,
+    name: messageComponentCustomIds.REMOVE_GROUP,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling delete group");
         const { message, member } = interaction;

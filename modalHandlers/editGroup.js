@@ -1,4 +1,4 @@
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 const editSubCommands = require("../constants/editSubCommands");
 const store = require("../redux/store.js");
 const { groupsSelector } = require("../redux/groupsSlice.js");
@@ -10,15 +10,17 @@ const {
 } = require("../helpers/editCommandHelpers");
 
 module.exports = {
-    name: buttonCustomIds.EDIT_MODAL,
+    name: messageComponentCustomIds.EDIT_MODAL,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling edit group modal submit");
 
-        const groupId = interaction.fields.getTextInputValue(buttonCustomIds.EDIT_GROUPID);
+        const groupId = interaction.fields.getTextInputValue(
+            messageComponentCustomIds.EDIT_GROUPID,
+        );
         const property = interaction.fields
-            .getTextInputValue(buttonCustomIds.EDIT_SELECT)
+            .getTextInputValue(messageComponentCustomIds.EDIT_SELECT)
             .toLowerCase();
-        const newValue = interaction.fields.getTextInputValue(buttonCustomIds.EDIT_VALUE);
+        const newValue = interaction.fields.getTextInputValue(messageComponentCustomIds.EDIT_VALUE);
 
         const groupObj = groupsSelector.selectById(store.getState(), groupId);
         if (!groupObj) {

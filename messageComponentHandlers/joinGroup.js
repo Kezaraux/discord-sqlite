@@ -1,4 +1,4 @@
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 const { groupsSelector } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
 const groupStatus = require("../constants/groupStatus");
@@ -11,7 +11,7 @@ const {
 } = require("../helpers/groupHelpers");
 
 module.exports = {
-    name: buttonCustomIds.JOIN_GROUP,
+    name: messageComponentCustomIds.JOIN_GROUP,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling join group");
         const { message, member, guild } = interaction;

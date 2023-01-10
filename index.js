@@ -14,7 +14,7 @@ const client = new Client({
     ],
 });
 client.commands = new Collection();
-client.buttonHandlers = new Collection();
+client.messageComponentHandlers = new Collection();
 client.modalHandlers = new Collection();
 
 const logger = winston.createLogger({
@@ -56,14 +56,14 @@ for (const file of eventFiles) {
     }
 }
 
-// Register button handlers
-const buttonHandlerFiles = fs
+// Register message component handlers
+const messageComponentHandlerFiles = fs
     .readdirSync("./messageComponentHandlers")
     .filter(file => file.endsWith(".js"));
-for (const file of buttonHandlerFiles) {
+for (const file of messageComponentHandlerFiles) {
     const handler = require(`./messageComponentHandlers/${file}`);
-    logger.info(`Registering button handler: ${handler.name}`);
-    client.buttonHandlers.set(handler.name, handler);
+    logger.info(`Registering message component handler: ${handler.name}`);
+    client.messageComponentHandlers.set(handler.name, handler);
 }
 
 // Register modal handlers

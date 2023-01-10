@@ -3,7 +3,7 @@ const momentTz = require("moment-timezone");
 require("moment-parseplus");
 
 const groupStatus = require("../constants/groupStatus");
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 const { getUserDisplayName } = require("../helpers/userHelpers.js");
 
 const constructEmbedField = (name, value, inline = false) => ({ name, value, inline });
@@ -91,25 +91,25 @@ const constructGroupEmbed = async (guild, groupObj, active = true) => {
 const constructGroupButtons = () => {
     const joinRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(buttonCustomIds.JOIN_GROUP)
+            .setCustomId(messageComponentCustomIds.JOIN_GROUP)
             .setLabel("Join group")
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
-            .setCustomId(buttonCustomIds.EXTRA)
+            .setCustomId(messageComponentCustomIds.EXTRA)
             .setLabel("Join as extra")
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
-            .setCustomId(buttonCustomIds.SHOW_INTEREST)
+            .setCustomId(messageComponentCustomIds.SHOW_INTEREST)
             .setLabel("Unsure but interested")
             .setStyle(ButtonStyle.Primary),
     );
     const leaveRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(buttonCustomIds.LEAVE_GROUP)
+            .setCustomId(messageComponentCustomIds.LEAVE_GROUP)
             .setLabel("Leave group")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
-            .setCustomId(buttonCustomIds.REMOVE_GROUP)
+            .setCustomId(messageComponentCustomIds.REMOVE_GROUP)
             .setLabel("Remove group")
             .setStyle(ButtonStyle.Danger),
     );
@@ -120,7 +120,7 @@ const constructGroupButtons = () => {
 const constructAcknowledgeButton = () => {
     const mainRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(buttonCustomIds.ACKNOWLEDGE)
+            .setCustomId(messageComponentCustomIds.ACKNOWLEDGE)
             .setLabel("Acknowledge")
             .setStyle(ButtonStyle.Success),
     );

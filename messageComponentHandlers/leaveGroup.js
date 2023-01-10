@@ -1,4 +1,4 @@
-const buttonCustomIds = require("../constants/buttonCustomIds");
+const messageComponentCustomIds = require("../constants/messageComponentCustomIds");
 const { groupsSelector, groupMembersSet } = require("../redux/groupsSlice.js");
 const store = require("../redux/store");
 const { constructGroupEmbed, constructGroupButtons } = require("../helpers/messageComponents");
@@ -6,7 +6,7 @@ const { userInGroup } = require("../helpers/groupHelpers");
 const userQueries = require("../db/userQueries.js");
 
 module.exports = {
-    name: buttonCustomIds.LEAVE_GROUP,
+    name: messageComponentCustomIds.LEAVE_GROUP,
     execute: async ({ interaction, client, logger }) => {
         logger.info("Handling leave group");
         const { message, member, guild } = interaction;
