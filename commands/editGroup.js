@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionsBitField } = require("discord.js");
 
 const editSubCommands = require("../constants/editSubCommands");
 const store = require("../redux/store.js");
@@ -94,10 +94,14 @@ module.exports = {
         const groupID = options.get("groupid").value;
 
         const group = groupsSelector.selectById(store.getState(), groupID);
-        if (member.id !== group.creatorID) {
+        if (
+            member.id !== group.creatorID &&
+            !member.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)
+        ) {
             interaction.reply({
-                content:
-                    "You cannot edit this group since you didn't create it. Please get the group owner to perform any edits.",
+                content: `The group can only be edited if:
+            1) The group creator requests it
+            2) You have permissions to manage messages in this channel`,
                 ephemeral: true,
             });
             return;

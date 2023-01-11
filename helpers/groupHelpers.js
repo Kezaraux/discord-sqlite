@@ -4,6 +4,7 @@ const combinedQueries = require("../db/combinedQueries.js");
 const { constructGroupMessage } = require("./messageComponents");
 const store = require("../redux/store.js");
 const { groupMembersSet, groupsSelector, groupRemoved } = require("../redux/groupsSlice.js");
+const { Message } = require("discord.js");
 
 const countStatusInGroup = (group, statusType) => {
     let count = 0;
@@ -136,6 +137,12 @@ const removeGroupWithMessage = async message => {
             returnStatus.success = true;
             returnStatus.message =
                 "I've removed the group! Consider replying to the group message with a reason for it is no longer active.";
+            if (updatedMessage.hasThread && !updatedMessage.thread.archived) {
+                await updatedMessage.thread.send(
+                    `This thread for the group ${group.title} has been archived due to the group being marked inactive.`,
+                );
+                await updatedMessage.thread.setArchived(true);
+            }
         }
     } catch (err) {
         console.log(`Something went wrong when editing the message for group ${message.id}`);

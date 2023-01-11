@@ -60,6 +60,15 @@ module.exports = {
                 .setName("channel")
                 .setDescription("The channel you want this group to appear in.")
                 .setRequired(false),
+        )
+        .addStringOption(option =>
+            option
+                .setName("start-thread")
+                .setDescription(
+                    "Whether or not to start a thread on the group message. True by default.",
+                )
+                .setRequired(false)
+                .addChoices({ name: "true", value: "true" }, { name: "false", value: "false" }),
         ),
     execute: async (interaction, logger) => {
         const { member, options, client, guild } = interaction;
@@ -71,6 +80,17 @@ module.exports = {
         const eventChannel = options.getChannel("event-channel");
         const timezone = options.getString("timezone", false) ?? "America/Toronto";
         const channel = options.getChannel("channel", false);
+        const startThread = (options.getString("start-thread", false) ?? "true") === "true";
+
+        // Thread names can be 100 chars max
+        if (title.length > 100) {
+            await interaction.reply({
+                content:
+                    "The title for your group is too long! Please keep it to 100 characters or less.",
+                ephemeral: true,
+            });
+            return;
+        }
 
         if (!momentTimezone.tz.names().includes(timezone)) {
             await interaction.reply({
@@ -165,6 +185,10 @@ module.exports = {
         const newComps = constructGroupButtons();
         const messageWithId = { embeds: [newEmbed], components: newComps };
         newMessage.edit(messageWithId);
+
+        if (startThread) {
+            await newMessage.startThread({ name: title });
+        }
 
         createGroup.run(
             newMessage.id.toString(),

@@ -11,9 +11,8 @@ module.exports = {
     execute: async (interaction, logger) => {
         logger.info("Handling edit group context menu command");
 
-        const { targetMessage, user } = interaction;
+        const { targetMessage, member } = interaction;
         const { id: messageId } = targetMessage;
-        const { id: userId } = user;
 
         const groupObj = groupsSelector.selectById(store.getState(), messageId);
 
@@ -27,10 +26,14 @@ module.exports = {
         }
 
         // Check that the user who sent this interaction owns the group
-        if (userId !== groupObj.creatorID) {
+        if (
+            member.id !== groupObj.creatorID &&
+            !member.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)
+        ) {
             interaction.reply({
-                content:
-                    "You cannot edit this group since you didn't create it. Please get the group owner to perform any edits.",
+                content: `The group can only be edited if:
+            1) The group creator requests it
+            2) You have permissions to manage messages in this channel`,
                 ephemeral: true,
             });
             return;
