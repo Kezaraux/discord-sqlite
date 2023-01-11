@@ -6,7 +6,7 @@ const store = require("../redux/store.js");
 const { groupAdded } = require("../redux/groupsSlice.js");
 const { createGroup } = require("../db/groupQueries");
 const { constructGroupButtons, constructGroupEmbed } = require("../helpers/messageComponents.js");
-const guildScheduledEventUpdate = require("../events/guildScheduledEventUpdate.js");
+const groupStatus = require("../constants/groupStatus.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -92,6 +92,15 @@ module.exports = {
             return;
         }
 
+        // Group size should be at least 1
+        if (size < 1) {
+            await interaction.reply({
+                content: "The size for your group should be at least 1!",
+                ephemeral: true,
+            });
+            return;
+        }
+
         if (!momentTimezone.tz.names().includes(timezone)) {
             await interaction.reply({
                 content: `The timezone you provided wasn't recognized. Try something in the format of America/Toronto.`,
@@ -124,7 +133,7 @@ module.exports = {
             datetime,
             timezone,
             creatorID: member.id,
-            members: {},
+            members: { [member.id]: groupStatus.CONFIRMED },
             eventID: null,
         };
 
