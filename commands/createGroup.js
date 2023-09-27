@@ -5,6 +5,7 @@ require("moment-parseplus");
 const store = require("../redux/store.js");
 const { groupAdded } = require("../redux/groupsSlice.js");
 const { createGroup } = require("../db/groupQueries");
+const { addUserToGroup } = require("../db/userQueries.js");
 const { constructGroupButtons, constructGroupEmbed } = require("../helpers/messageComponents.js");
 const groupStatus = require("../constants/groupStatus.js");
 
@@ -219,10 +220,19 @@ module.exports = {
                     return;
                 }
 
-                await interaction.reply({
-                    content: "I've created your group!",
-                    ephemeral: true,
-                });
+                addUserToGroup.run(
+                    member.id.toString(),
+                    groupObj.id.toString(),
+                    groupStatus.CONFIRMED,
+                    err => {
+                        if (err) return console.error(err);
+
+                        interaction.reply({
+                            content: "I've created your group and added you to it!",
+                            ephemeral: true,
+                        });
+                    },
+                );
             },
         );
     },
