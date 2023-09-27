@@ -94,6 +94,8 @@ const handleRemoveRole = async (interaction, logger) => {
 };
 
 module.exports = {
+    disabled: true,
+    devOnly: true,
     data: new SlashCommandBuilder()
         .setName("manage-roles")
         .setDescription("Manage or view the list of roles available for assignment.")

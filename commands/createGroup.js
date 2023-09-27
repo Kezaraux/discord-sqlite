@@ -10,6 +10,8 @@ const { constructGroupButtons, constructGroupEmbed } = require("../helpers/messa
 const groupStatus = require("../constants/groupStatus.js");
 
 module.exports = {
+    disabled: false,
+    devOnly: false,
     data: new SlashCommandBuilder()
         .setName("create-group")
         .setDescription("A command for forming groups.")

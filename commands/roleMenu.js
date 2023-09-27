@@ -3,6 +3,8 @@ const { SlashCommandBuilder } = require("discord.js");
 const { canBotManageRoles, constructRoleGetMessage } = require("../helpers/roleHelpers.js");
 
 module.exports = {
+    disabled: true,
+    devOnly: true,
     data: new SlashCommandBuilder()
         .setName("role-menu")
         .setDescription(

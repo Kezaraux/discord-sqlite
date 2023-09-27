@@ -11,6 +11,8 @@ const {
 } = require("../helpers/editCommandHelpers");
 
 module.exports = {
+    disabled: false,
+    devOnly: false,
     data: new SlashCommandBuilder()
         .setName("edit-group")
         .setDescription("A command for editing existing groups.")

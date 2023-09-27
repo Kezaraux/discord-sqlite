@@ -75,17 +75,23 @@ for (const file of modalHandlerFiles) {
 }
 
 client.once("ready", async () => {
-    logger.info("Registering commands with the API");
+    if (false) {
+        logger.info("Registering commands with the API");
 
-    const rest = new REST({ version: "10" }).setToken(token);
+        const rest = new REST({ version: "10" }).setToken(token);
 
-    rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-        body: cmds.map(cmd => cmd.toJSON()),
-    })
-        .then(() => {
-            logger.info("Successfully registered application commands");
+        rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+            body: cmds.map(cmd => cmd.toJSON()),
         })
-        .catch(console.error);
+            .then(() => {
+                logger.info("Successfully registered application commands");
+            })
+            .catch(console.error);
+    } else {
+        logger.info(
+            "Skipping auto-deploying commands to specified guild with the API. Manually deploy commands instead!",
+        );
+    }
 
     const featureFiles = fs.readdirSync("./features");
     for (const file of featureFiles) {

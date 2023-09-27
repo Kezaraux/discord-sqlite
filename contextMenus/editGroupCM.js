@@ -5,6 +5,8 @@ const { groupsSelector } = require("../redux/groupsSlice.js");
 const { constructEditGroupModal } = require("../modals/editGroupModal");
 
 module.exports = {
+    disabled: false,
+    devOnly: false,
     data: new ContextMenuCommandBuilder()
         .setName("Edit group")
         .setType(ApplicationCommandType.Message),
