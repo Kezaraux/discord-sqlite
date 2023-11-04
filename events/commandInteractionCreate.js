@@ -1,5 +1,7 @@
 const { InteractionType } = require("discord.js");
 
+const { errorHelper } = require("../helpers/errorHelper");
+
 module.exports = {
     name: "interactionCreate",
     once: false,
@@ -15,7 +17,7 @@ module.exports = {
         try {
             await command.execute(interaction, logger);
         } catch (error) {
-            console.error(error);
+            errorHelper(error, interaction, logger);
         }
     },
 };
